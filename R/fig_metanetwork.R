@@ -1,26 +1,5 @@
 #' Export figures for metanetwork
 #'
-#' @describeIn fig_metanetwork metanetwork per period
-#' @export
-fig_metanetwork_ <- function() {
-  # 2010-2015
-  cekm <- read.csv(here::here("output","cea_km2","cea_km2-2010_2015.csv"))
-  fig_metanetwork(cekm, "2010_2015", "Total")
-  fig_metanetwork(cekm, "2010_2015", "Direct")
-  fig_metanetwork(cekm, "2010_2015", "Indirect")
-  
-  # 2016-2021
-  cekm <- read.csv(here::here("output","cea_km2","cea_km2-2016_2021.csv"))
-  fig_metanetwork(cekm, "2016_2021", "Total")
-  fig_metanetwork(cekm, "2016_2021", "Direct")
-  fig_metanetwork(cekm, "2016_2021", "Indirect")
-  fig_metanetwork(cekm, "2016_2021", "Total", bg = "#00000000", out = here::here("figures","webinar"))
-  fig_metanetwork(cekm, "2016_2021", "Direct", bg = "#00000000", out = here::here("figures","webinar"))
-  fig_metanetwork(cekm, "2016_2021", "Indirect", bg = "#00000000", out = here::here("figures","webinar"))
-}
-
-#' Export figures for metanetwork
-#'
 #' @describeIn fig_metanetwork metanetwork figure
 #' @export
 fig_metanetwork <- function(cekm, period, type, bg = "#ffffff", out = here::here("figures","metanetwork")) {

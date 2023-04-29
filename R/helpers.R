@@ -1,86 +1,19 @@
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-#' Function to plot metanetwork using hierarchical edge bundling 
-plotMetanetwork <- function(metanetwork,
-                            rad1 = .925,
-                            rad2 = 1,
-                            sizeEdge = T,
-                            colPal = pal_insileco,
-                            type = 'all',
-                            focus = NULL,
-                            colLinks = '#876b40',
-                            colShadow = '#f4f4f4',
-                            shadowEdge = T,
-                            cexSize = NULL
-                          ) {
-
-    # Metanetwork = list composed of 'nodes' and 'links'
-    # rad1 = lower boundary for individual networks
-    # rad2 = upper boundary for individual networks
-    # colPal = color palette
-    # colLinks = color for links
-
-    # Function
-    # Boundaries of individual networks
-    metanetwork$networkGroup <- bound(metanetwork)
-
-    # Node coordinates
-      metanetwork <- nodePos(metanetwork, edgeRad = .875, groupRad = .5)
-
-    # Colors
-      metanetwork <- colGroups(metanetwork, colPal = colPal)
-
-    # Node size
-      # metanetwork <- nodeSize(metanetwork, freq = sizeEdge)
-      metanetwork$nodes$cex <- cexSize
-
-    # Link col
-      metanetwork <- linkCol(metanetwork, type = type, focus = focus, colLinks = colLinks, colShadow = colShadow)
-
-    # Plot
-    par(mar = c(0,0,0,0))
-    plot0()
-    boxGroup(metanetwork,
-             rad1 = rad1,
-             colBox = metanetwork$networkGroup$cols,
-             colNames = metanetwork$networkGroup$colNames,
-             border = 'transparent')
-    plotLinks(metanetwork,
-              col = metanetwork$links$cols)
-    if (shadowEdge) {
-      points(metanetwork$nodes$x,
-             metanetwork$nodes$y,
-             pch = 20,
-             cex = (metanetwork$nodes$cex * 5),
-             col = '#d7d7d7')
-    }
-
-    points(metanetwork$nodes$x,
-           metanetwork$nodes$y,
-           pch = 20,
-           cex = (metanetwork$nodes$cex * 3),
-           col = metanetwork$nodes$cols)
-}
-#=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
-#=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 #' Let's begin by creating a function that will give us the x and y coordinates
 #' of the outside of a circle given a certain radius
-
-coordCircle <- function(theta = NULL, radius = 1) {
+coordCircle <- function(theta, radius = 1) {
   data.frame(x = radius * cos(theta),
              y = radius * sin(theta))
   }
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
-
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
 bound <- function(metanetwork, order = NULL, gap = .05, addGap = T) {
   # Metanetwork list composed of "nodes" and "links"
   # Size of gap between groups on the graph
   # addGap logical whether to add gap or not
   nGroup <- as.data.frame(table(metanetwork$nodes$network))
-  nGroup <- nGroup[match(order, nGroup$Var1), ]
+  if (!is.null(order)) nGroup <- nGroup[match(order, nGroup$Var1), ]
   nGroup$Prop <- nGroup$Freq / sum(nGroup$Freq)
   nGroup$spanDeg <- 2 * pi * nGroup$Prop
   nGroup$upper <- nGroup$lower <- 0
@@ -95,12 +28,8 @@ bound <- function(metanetwork, order = NULL, gap = .05, addGap = T) {
   nGroup
 }
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-# plot0()
-# points(metanetwork$nodes$x, metanetwork$nodes$y, pch = 20, cex = 2)
-# points(metanetwork$networkGroup$x, metanetwork$networkGroup$y, pch = 20, cex = 2)
 
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
 nodePos <- function(metanetwork, edgeRad = 0.975, groupRad = 0.5, gapEdge = 0.1, addGap = T) {
     # Add x and y columns to nodes and networkGroup data
       metanetwork$nodes$y <- metanetwork$nodes$x <- 0
@@ -135,10 +64,7 @@ nodePos <- function(metanetwork, edgeRad = 0.975, groupRad = 0.5, gapEdge = 0.1,
 }
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
-
-
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
 boxGroup <- function(metanetwork, rad1 = .95, rad2 = 1, colBox = NULL, names = NULL, colNames = NULL, addNames = T, cexNetwork = 1, ...) {
   # metanetwork = data list composed of 'nodes', 'links' & 'networkGroup'
   # rad1 = lower boundary for polygons
@@ -185,7 +111,6 @@ boxGroup <- function(metanetwork, rad1 = .95, rad2 = 1, colBox = NULL, names = N
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
 boxGroup2 <- function(metanetwork, rad1 = .95, rad2 = 1, colBox = NULL, names = NULL, colNames = NULL, addNames = T, cexNetwork = 1, ...) {
   # metanetwork = data list composed of 'nodes', 'links' & 'networkGroup'
   # rad1 = lower boundary for polygons
@@ -233,9 +158,7 @@ boxGroup2 <- function(metanetwork, rad1 = .95, rad2 = 1, colBox = NULL, names = 
 }
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
-
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
 plotLinks <- function(metanetwork, cols = NULL, ...) {
     if (!is.null(cols) & length(cols) == 1) {
       cols <- rep(cols, nrow(metanetwork$links))
@@ -264,7 +187,6 @@ plotLinks <- function(metanetwork, cols = NULL, ...) {
   }
 
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
 colGroups <- function(metanetwork, colPal = pal_insileco) {
   # Group colors
     metanetwork$networkGroup$cols <- colPal[1:nrow(metanetwork$networkGroup)]
@@ -279,22 +201,22 @@ colGroups <- function(metanetwork, colPal = pal_insileco) {
 }
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
-# nodeSize <- function(metanetwork, freq = T) {
-#     if (isTRUE(freq)) {
-#       nLink <- as.data.frame(table(c(metanetwork$links$from, metanetwork$links$to)), stringsAsFactors = F)
-#       colnames(nLink)[1L] <- 'name'
-#       metanetwork$nodes <- dplyr::left_join(metanetwork$nodes, nLink, by = 'name')
-#       metanetwork$nodes$cex <- (metanetwork$nodes$Freq / max(metanetwork$nodes$Freq))
-#     } else {
-#       metanetwork$nodes$cex <- .33
-#     }
-#
-#     return(metanetwork)
-# }
+#=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
+nodeSize <- function(metanetwork, freq = T) {
+    if (isTRUE(freq)) {
+      nLink <- as.data.frame(table(c(metanetwork$links$from, metanetwork$links$to)), stringsAsFactors = F)
+      colnames(nLink)[1L] <- 'name'
+      metanetwork$nodes <- dplyr::left_join(metanetwork$nodes, nLink, by = 'name')
+      metanetwork$nodes$cex <- (metanetwork$nodes$Freq / max(metanetwork$nodes$Freq))
+    } else {
+      metanetwork$nodes$cex <- .33
+    }
 
-
+    return(metanetwork)
+}
 #=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
+#=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 linkCol <- function(metanetwork, type = 'all', focus = NULL, colLinks = '#876b40', colShadow = '#f4f4f4') {
   # metanetwork = list composed of 'nodes', 'links' and 'networkGroup'
   # type        = type of colors:
@@ -360,7 +282,7 @@ linkCol <- function(metanetwork, type = 'all', focus = NULL, colLinks = '#876b40
   }
 
   # Add transparency
-  metanetwork$links$cols <- paste0(metanetwork$links$cols, '22')
+  # metanetwork$links$cols <- paste0(metanetwork$links$cols, '22')
 
   metanetwork
 }
