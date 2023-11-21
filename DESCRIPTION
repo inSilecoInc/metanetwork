@@ -1,6 +1,6 @@
 Package: metanetwork
 Title: Circular Hierarchical Edge Bundling Graphs
-Version: 0.0.0.9003
+Version: 0.0.0.9004
 Authors@R: c(
     person(given   = "David",
            family  = "Beauchesne",
@@ -33,3 +33,6 @@ Imports:
        utils,
        viridis,
        vroom
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
