@@ -10,12 +10,16 @@ coordCircle <- function(theta, radius = 1) {
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-bound <- function(nodes, order = NULL, gap = .05, addGap = T) {
+bound <- function(nodes, gap = .05, addGap = T) {
   # Metanetwork list composed of "nodes" and "links"
   # Size of gap between groups on the graph
   # addGap logical whether to add gap or not
-  nGroup <- as.data.frame(table(nodes$subnetwork))
-  if (!is.null(order)) nGroup <- nGroup[match(order, nGroup$Var1), ]
+  nGroup <- table(nodes$subnetwork) |>
+    as.data.frame() |>
+    dplyr::left_join(nodes[, c("network", "subnetwork")], by = c("Var1" = "subnetwork")) |>
+    dplyr::distinct() |>
+    dplyr::arrange(network)
+
   nGroup$Prop <- nGroup$Freq / sum(nGroup$Freq)
   nGroup$spanDeg <- 2 * pi * nGroup$Prop
   nGroup$upper <- nGroup$lower <- 0
@@ -70,262 +74,249 @@ nodePos <- function(nodes, networkGroup, edgeRad = 0.975, groupRad = 0.5, gapEdg
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
-# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-boxGroup <- function(metanetwork, rad1 = .95, rad2 = 1, colBox = NULL, names = NULL, colNames = NULL, addNames = T, cexNetwork = 1, ...) {
-  # metanetwork = data list composed of 'nodes', 'links' & 'networkGroup'
-  # rad1 = lower boundary for polygons
-  # rad2 = upper boundary for polygons
-  # colBox = color of boxes
-  # names = names of individual networks
-  # colNames = color of names
-  # addNames = logical, add names of networks to graph
-  if (!is.null(colNames) & length(colNames) == 1) {
-    colNames <- rep(colNames, nrow(metanetwork$links))
-  }
-
-  if (!is.null(colBox) & length(colBox) == 1) {
-    colBox <- rep(colBox, nrow(metanetwork$links))
-  }
-
-  for (i in 1:nrow(metanetwork$networkGroup)) {
-    a <- coordCircle(
-      theta = seq(metanetwork$networkGroup$lower[i],
-        metanetwork$networkGroup$upper[i],
-        length = 200
-      ),
-      radius = rad1
-    )
-
-    b <- coordCircle(
-      theta = seq(metanetwork$networkGroup$upper[i],
-        metanetwork$networkGroup$lower[i],
-        length = 200
-      ),
-      radius = rad2
-    )
-
-    polygon(rbind(a, b, a[1L, ]), col = colBox[i], ...)
-
-    if (addNames) {
-      middle <- mean(c(
-        metanetwork$networkGroup$lower[i],
-        metanetwork$networkGroup$upper[i]
-      ))
-      clockwise <- if (middle > pi) F else T
-      plotrix::arctext(
-        x = as.character(metanetwork$networkGroup$Var1[i]),
-        radius = mean(c(rad1, rad2)),
-        middle = middle,
-        col = colNames[i],
-        clockwise = clockwise,
-        font = 2,
-        cex = cexNetwork
-      )
-    }
-  }
-}
-# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-boxGroup2 <- function(metanetwork, rad1 = .95, rad2 = 1, colBox = NULL, names = NULL, colNames = NULL, addNames = T, cexNetwork = 1, ...) {
-  # metanetwork = data list composed of 'nodes', 'links' & 'networkGroup'
-  # rad1 = lower boundary for polygons
-  # rad2 = upper boundary for polygons
-  # colBox = color of boxes
-  # names = names of individual networks
-  # colNames = color of names
-  # addNames = logical, add names of networks to graph
-  if (!is.null(colNames) & length(colNames) == 1) {
-    colNames <- rep(colNames, nrow(metanetwork$links))
-  }
-
-  if (!is.null(colBox) & length(colBox) == 1) {
-    colBox <- rep(colBox, nrow(metanetwork$links))
-  }
-
-  for (i in 1:nrow(metanetwork$networkGroup)) {
-    a <- coordCircle(
-      theta = seq(metanetwork$networkGroup$lower[i],
-        metanetwork$networkGroup$upper[i],
-        length = 200
-      ),
-      radius = rad1
-    )
-
-    b <- coordCircle(
-      theta = seq(metanetwork$networkGroup$upper[i],
-        metanetwork$networkGroup$lower[i],
-        length = 200
-      ),
-      radius = rad2
-    )
-
-    # polygon(rbind(a, b, a[1L,]), col = colBox[i], ...)
-    # polygon(rbind(a, b, a[1L,]), col = '#00000000', ...)
-    lines(a, col = "#000000", lwd = 3)
-
-    if (addNames) {
-      middle <- mean(c(
-        metanetwork$networkGroup$lower[i],
-        metanetwork$networkGroup$upper[i]
-      ))
-      clockwise <- if (middle > pi) F else T
-      plotrix::arctext(
-        x = as.character(metanetwork$networkGroup$Var1[i]),
-        radius = mean(c(rad1, rad2)),
-        middle = middle,
-        col = colNames[i],
-        clockwise = clockwise,
-        font = 2,
-        cex = cexNetwork
-      )
-    }
-  }
-}
-# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
-# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-plotLinks <- function(metanetwork, cols = NULL, ...) {
-  if (!is.null(cols) & length(cols) == 1) {
-    cols <- rep(cols, nrow(metanetwork$links))
-  }
-
-  for (i in 1:nrow(metanetwork$links)) {
-    link <- metanetwork$links[i, ]
-    edgeFromID <- which(metanetwork$nodes$name == link$from)
-    edgeToID <- which(metanetwork$nodes$name == link$to)
-    groupFromID <- which(metanetwork$networkGroup$Var1 == metanetwork$nodes$network[edgeFromID])
-    groupToID <- which(metanetwork$networkGroup$Var1 == metanetwork$nodes$network[edgeToID])
-
-    if (metanetwork$nodes$network[edgeFromID] != metanetwork$nodes$network[edgeToID]) {
-      linkPath <- rbind(
-        metanetwork$nodes[edgeFromID, c("x", "y")],
-        metanetwork$networkGroup[groupFromID, c("x", "y")],
-        metanetwork$networkGroup[groupToID, c("x", "y")],
-        metanetwork$nodes[edgeToID, c("x", "y")]
-      )
-    } else {
-      linkPath <- rbind(
-        metanetwork$nodes[edgeFromID, c("x", "y")],
-        metanetwork$networkGroup[groupFromID, c("x", "y")],
-        metanetwork$nodes[edgeToID, c("x", "y")]
-      )
-    }
-
-    lines(xspline(linkPath$x, linkPath$y, shape = 1, draw = FALSE), col = cols[i], ...)
-  }
-}
-
-# # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-# colGroups <- function(metanetwork, colPal = pal_insileco) {
-#   # Group colors
-#   metanetwork$networkGroup$cols <- colPal[1:nrow(metanetwork$networkGroup)]
-
-#   # Node colors
-#   metanetwork$nodes$cols <- NA
-#   for (i in 1:nrow(metanetwork$networkGroup)) {
-#     metanetwork$nodes$cols[metanetwork$nodes$network == metanetwork$networkGroup$Var1[i]] <- metanetwork$networkGroup$cols[i]
-#   }
-
-#   metanetwork
-# }
-# # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
-# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-nodeSize <- function(metanetwork, freq = T) {
-  if (isTRUE(freq)) {
-    nLink <- as.data.frame(table(c(metanetwork$links$from, metanetwork$links$to)), stringsAsFactors = F)
-    colnames(nLink)[1L] <- "name"
-    metanetwork$nodes <- dplyr::left_join(metanetwork$nodes, nLink, by = "name")
-    metanetwork$nodes$cex <- (metanetwork$nodes$Freq / max(metanetwork$nodes$Freq))
-  } else {
-    metanetwork$nodes$cex <- .33
-  }
-
-  return(metanetwork)
-}
-# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-
-# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-linkCol <- function(metanetwork, type = "all", focus = NULL, colLinks = "#876b40", colShadow = "#f4f4f4") {
-  # metanetwork = list composed of 'nodes', 'links' and 'networkGroup'
-  # type        = type of colors:
-  #                 'all' = all links with single color = `colLinks`
-  #                 'focus' = focus on the links of identified network
+linkCol <- function(links, networkGroup, focus = NULL, colLink = "#876b40", shadowLink = "#f4f4f4") {
   # focus       = character, name of network(s) to focus on;
   #                 if length(focus) == 1, all links towards a single network
   #                 if length(focus) > 1, links focused on identified networks
-  # colLinks    = color of links of `type` == 'all'
-  # colShadow   = color of links that we are not focused on
+  # colLink    = color of links when all colors are the same
+  # shadowLink   = color of links that we are not focused on
 
   # Function
-  if (type == "all") {
-    metanetwork$links$cols <- colLinks
+  if (is.null(focus)) {
+    networkGroup$colNames <- shadowLink
+    networkGroup$colBox <- networkGroup$col
   }
 
-  if (type == "focus" & length(focus) == 1) {
-    # Box colors
-    focusID <- metanetwork$networkGroup$Var1 %in% focus
-    colBox <- metanetwork$networkGroup$cols
-    metanetwork$networkGroup$cols[!focusID] <- colShadow
-    metanetwork$networkGroup$colNames <- colBox
-    metanetwork$networkGroup$colNames[focusID] <- colShadow
+  if (!is.null(focus)) {
+    # Box colors for subnetworks
+    uid <- networkGroup$Var1 %in% focus
+    networkGroup$colNames <- networkGroup$col
+    networkGroup$colNames[uid] <- shadowLink
+    networkGroup$colBox <- networkGroup$col
+    networkGroup$colBox[!uid] <- shadowLink
 
-    # Link colors
-    # metanetwork$links$cols <- paste0(colShadow, 88)
-    metanetwork$links$cols <- colShadow
+    # Identify with which subnetwork each interaction is associated
+    links$col <- shadowLink
     linkCol <- data.frame(
-      from = metanetwork$nodes$network[match(
-        metanetwork$links$from,
-        metanetwork$nodes$name
-      )],
-      to = metanetwork$nodes$network[match(
-        metanetwork$links$to,
-        metanetwork$nodes$name
-      )],
-      stringsAsFactors = F
+      from = nodes$subnetwork[match(links$from, nodes$category)],
+      to = nodes$subnetwork[match(links$to, nodes$category)]
     )
 
-    linkID <- linkCol$from %in% focus & linkCol$to %in% focus
-    metanetwork$links$cols[linkID] <- metanetwork$networkGroup$cols[focusID] # "cannibalism"
+    if (length(focus) == 1) {
+      # Intra-network interactions
+      linkID <- linkCol$from %in% focus & linkCol$to %in% focus
+      links$col[linkID] <- networkGroup$col[uid]
 
-    linkID <- (linkCol$from %in% focus | linkCol$to %in% focus) & !linkID
-    cols <- paste0(linkCol$from[linkID], linkCol$to[linkID])
-    cols <- gsub(focus, "", cols)
-    cols <- match(cols, metanetwork$networkGroup$Var1)
-    cols <- metanetwork$networkGroup$colNames[cols]
-    metanetwork$links$cols[linkID] <- cols
+      # Inter-network interactions
+      linkID <- (linkCol$from %in% focus | linkCol$to %in% focus) & !linkID
+      cols <- paste0(linkCol$from[linkID], linkCol$to[linkID])
+      cols <- gsub(focus, "", cols)
+      cols <- match(cols, networkGroup$Var1)
+      cols <- networkGroup$col[cols]
+      links$col[linkID] <- cols
+    }
+
+    if (length(focus) > 1) {
+      linkID <- linkCol$from %in% focus & linkCol$to %in% focus
+      links$col[linkID] <- colLink
+    }
   }
 
-  if (type == "focus" & length(focus) > 1) {
-    # Box colors
-    focusID <- metanetwork$networkGroup$Var1 %in% focus
-    colBox <- metanetwork$networkGroup$cols
-    metanetwork$networkGroup$cols[!focusID] <- colShadow
-    metanetwork$networkGroup$colNames <- colBox
-    metanetwork$networkGroup$colNames[focusID] <- colShadow
-
-    # Link colors
-    metanetwork$links$cols <- colShadow
-    linkCol <- data.frame(
-      from = metanetwork$nodes$network[match(
-        metanetwork$links$from,
-        metanetwork$nodes$name
-      )],
-      to = metanetwork$nodes$network[match(
-        metanetwork$links$to,
-        metanetwork$nodes$name
-      )],
-      stringsAsFactors = F
-    )
-
-    linkID <- linkCol$from %in% focus & linkCol$to %in% focus
-    metanetwork$links$cols[linkID] <- colLinks
-  }
-
-  # Add transparency
-  # metanetwork$links$cols <- paste0(metanetwork$links$cols, '22')
-
+  metanetwork <- list()
+  metanetwork$links <- links
+  metanetwork$networkGroup <- networkGroup
   metanetwork
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
+
+# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
+boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, names = NULL, colNames = NULL, addNames = T, cexNetwork = 1, type = "box", ...) {
+  # metanetwork = data list composed of 'nodes', 'links' & 'networkGroup'
+  # rad1 = lower boundary for polygons
+  # rad2 = upper boundary for polygons
+  # colBox = color of boxes
+  # names = names of individual networks
+  # colNames = color of names
+  # addNames = logical, add names of networks to graph
+  if (!is.null(colNames) & length(colNames) == 1) {
+    colNames <- rep(colNames, nrow(links))
+  }
+
+  if (!is.null(colBox) & length(colBox) == 1) {
+    colBox <- rep(colBox, nrow(links))
+  }
+
+  for (i in 1:nrow(networkGroup)) {
+    a <- coordCircle(
+      theta = seq(networkGroup$lower[i],
+        networkGroup$upper[i],
+        length = 200
+      ),
+      radius = rad1
+    )
+
+    b <- coordCircle(
+      theta = seq(networkGroup$upper[i],
+        networkGroup$lower[i],
+        length = 200
+      ),
+      radius = rad2
+    )
+
+    if (type == "box") polygon(rbind(a, b, a[1L, ]), col = colBox[i], ...)
+    if (type == "line") lines(a, col = "#000000", lwd = 3)
+
+    if (addNames) {
+      middle <- mean(c(
+        networkGroup$lower[i],
+        networkGroup$upper[i]
+      ))
+      clockwise <- if (middle > pi) F else T
+      plotrix::arctext(
+        x = as.character(networkGroup$Var1[i]),
+        radius = mean(c(rad1, rad2)),
+        middle = middle,
+        col = colNames[i],
+        clockwise = clockwise,
+        font = 2,
+        cex = cexNetwork
+      )
+    }
+  }
+}
+# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
+
+# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
+plotLinks <- function(nodes, links, networkGroup, ...) {
+  for (i in 1:nrow(links)) {
+    link <- links[i, ]
+    edgeFromID <- which(nodes$category == link$from)
+    edgeToID <- which(nodes$category == link$to)
+    groupFromID <- which(networkGroup$Var1 == nodes$subnetwork[edgeFromID])
+    groupToID <- which(networkGroup$Var1 == nodes$subnetwork[edgeToID])
+
+    if (nodes$subnetwork[edgeFromID] != nodes$subnetwork[edgeToID]) {
+      linkPath <- rbind(
+        nodes[edgeFromID, c("x", "y")],
+        networkGroup[groupFromID, c("x", "y")],
+        networkGroup[groupToID, c("x", "y")],
+        nodes[edgeToID, c("x", "y")]
+      )
+    } else {
+      linkPath <- rbind(
+        nodes[edgeFromID, c("x", "y")],
+        networkGroup[groupFromID, c("x", "y")],
+        nodes[edgeToID, c("x", "y")]
+      )
+    }
+
+    lines(xspline(linkPath$x, linkPath$y, shape = 1, draw = FALSE), col = links$col[i], ...)
+  }
+}
+# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
+
+# =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
+metanetwork_legend <- function(labs, res = 300, textSize = 1) {
+  # Height of figure should depend on the maximum number of elements in a subnetwork
+  # Width given to each subnetwork should depend on the number of subnetworks, but have a maximum width parameter
+
+  nCol <- length(unique(labs$subnetwork))
+  nRow <- dplyr::group_by(labs, subnetwork) |>
+    dplyr::summarise(n = dplyr::n()) |>
+    dplyr::summarise(n = max(n)) |>
+    as.numeric()
+
+  # Categories
+  cat <- labs |>
+    dplyr::group_by(network, subnetwork) |>
+    dplyr::mutate(id = dplyr::cur_group_id()) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(
+      x = 0 + id,
+      y = 0 + lab,
+      labels = glue::glue("{lab}: {category}")
+    )
+
+  # Subnetworks
+  sub <- cat |>
+    dplyr::select(network, subnetwork, col, id) |>
+    dplyr::distinct() |>
+    dplyr::mutate(
+      x1 = id,
+      x2 = id + .9,
+      y1 = 0,
+      y2 = 1,
+    )
+
+  # Networks
+  net <- sub |>
+    dplyr::group_by(network) |>
+    dplyr::summarise(x1 = min(x1), x2 = max(x2))
+
+  png(
+    "metanetwork_legend.png",
+    res = res,
+    width = 50 * nCol,
+    height = 5 * nRow,
+    units = "mm"
+  )
+
+  # Plot
+  par(mar = c(.5, .5, .5, .5), bg = "#ffffff")
+  graphicsutils::plot0(x = c(1, nCol + 1), y = c(3, -nRow))
+
+  # Graphical elements
+  xG <- .05
+
+  # Networks
+  for (i in 1:nrow(net)) {
+    lines(x = c(net$x1[i], net$x2[i]), y = c(1.25, 1.25), lwd = 2)
+  }
+
+  text(
+    x = net$x1,
+    y = 2,
+    labels = net$network,
+    cex = textSize,
+    font = 2,
+    adj = c(0, .5)
+  )
+
+  # Subnetworks
+  rect(sub$x1, sub$y1, sub$x2, sub$y2, col = sub$col, border = sub$col)
+  text(
+    x = sub$x1 + xG,
+    y = .5,
+    labels = sub$subnetwork,
+    cex = textSize * .9,
+    font = 2,
+    adj = c(0, .5)
+  )
+
+  # Categories
+  text(
+    x = cat$x + xG,
+    y = -cat$y,
+    labels = cat$labels,
+    adj = c(0, .5),
+    cex = textSize * .85
+  )
+
+  dev.off()
+  # ------------------------------------------------------------------------------------------
+
+  # Combine figures together
+  i1 <- magick::image_read("metanetwork.png")
+  i2 <- magick::image_read("metanetwork_legend.png")
+  img <- magick::image_append(c(i1, i2), stack = TRUE)
+
+  magick::image_write(
+    img,
+    path = "metanetwork.png",
+    format = "png"
+  )
+
+  file.remove("metanetwork_legend.png")
+}

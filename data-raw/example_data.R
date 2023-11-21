@@ -26,11 +26,6 @@ links <- links[!links$from == links$to, ] # Remove "cannibalism"
 links$col <- "#876b40"
 links$width <- .25
 
-# # Combine in a single object
-# metanetwork <- vector('list', 0)
-# metanetwork$nodes <- nodes
-# metanetwork$links <- links
-
 # Export as system data
 out <- "inst/extdata/"
 if (!file.exists(out)) dir.create(out, recursive = TRUE)
