@@ -1,7 +1,7 @@
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 #' Let's begin by creating a function that will give us the x and y coordinates
 #' of the outside of a circle given a certain radius
-#' @noRd 
+#' @noRd
 coordCircle <- function(theta, radius = 1) {
   data.frame(
     x = radius * cos(theta),
@@ -24,7 +24,9 @@ bound <- function(nodes, gap = .05, addGap = TRUE) {
   nGroup$Prop <- nGroup$Freq / sum(nGroup$Freq)
   nGroup$spanDeg <- 2 * pi * nGroup$Prop
   nGroup$upper <- nGroup$lower <- 0
-  for (i in 2:nrow(nGroup)) nGroup$lower[i] <- nGroup$lower[i - 1] + nGroup$spanDeg[i - 1]
+  for (i in 2:nrow(nGroup)) {
+    nGroup$lower[i] <- nGroup$lower[i - 1] + nGroup$spanDeg[i - 1]
+  }
   nGroup$upper <- nGroup$lower + nGroup$spanDeg
 
   if (addGap) {
@@ -68,9 +70,7 @@ nodePos <- function(nodes, networkGroup, edgeRad = 0.975, groupRad = 0.5, gapEdg
     networkGroup$y[i] <- groupPos$y
   }
 
-  metanetwork <- list()
-  metanetwork$nodes <- nodes
-  metanetwork$networkGroup <- networkGroup
+  metanetwork <- list(nodes = nodes, networkGroup = networkGroup)
   metanetwork
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
@@ -88,9 +88,7 @@ linkCol <- function(links, networkGroup, focus = NULL, colLink = "#876b40", shad
   if (is.null(focus)) {
     networkGroup$colNames <- shadowLink
     networkGroup$colBox <- networkGroup$col
-  }
-
-  if (!is.null(focus)) {
+  } else {
     # Box colors for subnetworks
     uid <- networkGroup$Var1 %in% focus
     networkGroup$colNames <- networkGroup$col
@@ -125,9 +123,7 @@ linkCol <- function(links, networkGroup, focus = NULL, colLink = "#876b40", shad
     }
   }
 
-  metanetwork <- list()
-  metanetwork$links <- links
-  metanetwork$networkGroup <- networkGroup
+  metanetwork <- list(links = links, networkGroup = networkGroup)
   metanetwork
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
@@ -149,7 +145,7 @@ boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, n
     colBox <- rep(colBox, nrow(links))
   }
 
-  for (i in 1:nrow(networkGroup)) {
+  for (i in seq_len(nrow(networkGroup))) {
     a <- coordCircle(
       theta = seq(networkGroup$lower[i],
         networkGroup$upper[i],
@@ -166,17 +162,19 @@ boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, n
       radius = rad2
     )
 
-    if (type == "box") 
+    if (type == "box") {
       graphics::polygon(rbind(a, b, a[1L, ]), col = colBox[i], ...)
-    if (type == "line") 
+    }
+    if (type == "line") {
       graphics::lines(a, col = "#000000", lwd = 3)
+    }
 
     if (addNames) {
       middle <- mean(c(
         networkGroup$lower[i],
         networkGroup$upper[i]
       ))
-      clockwise <- if (middle > pi) FALSE else TRUE
+      clockwise <- middle > pi
       plotrix::arctext(
         x = as.character(networkGroup$Var1[i]),
         radius = mean(c(rad1, rad2)),
@@ -193,7 +191,7 @@ boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, n
 
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 plotLinks <- function(nodes, links, networkGroup, ...) {
-  for (i in 1:nrow(links)) {
+  for (i in seq_len(nrow(links))) {
     link <- links[i, ]
     edgeFromID <- which(nodes$category == link$from)
     edgeToID <- which(nodes$category == link$to)
@@ -250,7 +248,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
       x1 = id,
       x2 = id + .9,
       y1 = 0,
-      y2 = 1,
+      y2 = 1
     )
 
   # Networks
@@ -274,7 +272,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
   xG <- .05
 
   # Networks
-  for (i in 1:nrow(net)) {
+  for (i in seq_len(nrow(net))) {
     graphics::lines(x = c(net$x1[i], net$x2[i]), y = c(1.25, 1.25), lwd = 2)
   }
 
@@ -388,17 +386,17 @@ plotAreaColor <- function(color = "grey80", border = NA, ...) {
   args <- list(...)
   lp <- graphics::par()$usr
   coor <- list(
-    xleft = lp[1L], ybottom = lp[3L], xright = lp[2L],
-    ytop = lp[4L]
+    xleft = lp[1L], ybottom = lp[3L], xright = lp[2L], ytop = lp[4L]
   )
   if (!is.null(names(color))) {
     names(color) <- NULL
   }
   ##
   if (length(args) > 0) {
-    do.call(graphics::rect, args = as.list(
-      c(coor, border = border, col = color, args)
-    ))
+    do.call(
+      graphics::rect,
+      args = as.list(c(coor, border = border, col = color, args))
+    )
   } else {
     do.call(graphics::rect, args = as.list(c(coor, border = border, col = color)))
   }
