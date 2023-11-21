@@ -1,6 +1,6 @@
 Package: metanetwork
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Circular Hierarchical Edge Bundling Graphs
+Version: 0.0.0.9001
 Authors@R: c(
     person(given   = "David",
            family  = "Beauchesne",
@@ -12,17 +12,23 @@ Authors@R: c(
            role    = "aut", 
            email   = "kcazelle@uoguelph.ca", 
            comment = c(ORCID = "0000-0001-6619-9874")))
-Description: What the package does (one paragraph).
+Description: Package to generate circular hierarchical edge bundling graphs to represent metanetworks.
 URL: https://github.com/david-beauchesne/rcea
 BugReports: https://github.com/david-beauchesne/rcea/issues
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Depends: 
-       R (>= 3.2.0)
+       R (>= 4.1.0)
 Imports:
+       dplyr,
+       glue,
        graphics,
-       vroom,
-       png
+       grDevices,
+       magick,
+       methods,
+       plotrix,
+       viridis,
+       vroom

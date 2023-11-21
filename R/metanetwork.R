@@ -18,6 +18,7 @@
 #'
 #' @examples
 #' # Data 1
+#' \dontrun{
 #' nodes <- metanetwork:::nodes
 #' links <- metanetwork:::links
 #'
@@ -29,7 +30,7 @@
 #' # Data 2
 #' nodes <- system.file("extdata", "nodes.csv", package = "metanetwork") |> read.csv()
 #' links <- system.file("extdata", "links.csv", package = "metanetwork") |> read.csv()
-#'
+#' }
 #' @export
 metanetwork <- function(
     nodes,
@@ -164,7 +165,7 @@ metanetwork <- function(
   # PLOT
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
   if (export) {
-    png(
+    grDevices::png(
       "metanetwork.png",
       res = res,
       width = img_size,
@@ -173,8 +174,8 @@ metanetwork <- function(
     )
   }
 
-  par(mar = c(0, 0, 0, 0), family = "serif")
-  graphicsutils::plot0(x = c(-1.1, 1.1))
+  graphics::par(mar = c(0, 0, 0, 0), family = "serif")
+  plot0(x = c(-1.1, 1.1))
 
   # Networks
   boxGroup(
@@ -203,7 +204,7 @@ metanetwork <- function(
 
   # Shadow under nodes
   if (shadowNode) {
-    points(
+    graphics::points(
       nodes$x,
       nodes$y,
       pch = 20,
@@ -213,7 +214,7 @@ metanetwork <- function(
   }
 
   # Nodes
-  points(
+  graphics::points(
     nodes$x,
     nodes$y,
     pch = 20,
@@ -222,9 +223,9 @@ metanetwork <- function(
   )
 
   # Add labels if legend
-  if (legend) text(x = labs$x, y = labs$y, labels = labs$lab, cex = .45)
+  if (legend) graphics::text(x = labs$x, y = labs$y, labels = labs$lab, cex = .45)
 
-  if (export) dev.off()
+  if (export) grDevices::dev.off()
 
   # Legend
   if (legend) {
