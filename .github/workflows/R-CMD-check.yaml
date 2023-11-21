@@ -18,7 +18,7 @@ jobs:
         config:
           - {os: macOS-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-20.04, r: 'release'}
+          - {os: ubuntu-22.04, r: 'release'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -45,10 +45,12 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
           
       - name: Code coverage
+        if: matrix.config.os == 'ubuntu-22.04'
         run: covr::package_coverage()
         shell: Rscript {0}
 
       - name: Good practices
+        if: matrix.config.os == 'ubuntu-22.04'
         run: |
           goodpractice::gp(checks = c(
             "cyclocomp",
@@ -58,6 +60,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Lint
+        if: matrix.config.os == 'ubuntu-22.04'
         run: |
           library(lintr)
           lint_package(linters = with_defaults(object_name_linter("camelCase"), line_length_linter(160L), object_length_linter(length = 60L)))
