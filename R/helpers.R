@@ -1,6 +1,7 @@
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 #' Let's begin by creating a function that will give us the x and y coordinates
 #' of the outside of a circle given a certain radius
+#' @noRd
 coordCircle <- function(theta, radius = 1) {
   data.frame(
     x = radius * cos(theta),
@@ -10,7 +11,7 @@ coordCircle <- function(theta, radius = 1) {
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-bound <- function(nodes, gap = .05, addGap = T) {
+bound <- function(nodes, gap = .05, addGap = TRUE) {
   # Metanetwork list composed of "nodes" and "links"
   # Size of gap between groups on the graph
   # addGap logical whether to add gap or not
@@ -23,7 +24,9 @@ bound <- function(nodes, gap = .05, addGap = T) {
   nGroup$Prop <- nGroup$Freq / sum(nGroup$Freq)
   nGroup$spanDeg <- 2 * pi * nGroup$Prop
   nGroup$upper <- nGroup$lower <- 0
-  for (i in 2:nrow(nGroup)) nGroup$lower[i] <- nGroup$lower[i - 1] + nGroup$spanDeg[i - 1]
+  for (i in 2:nrow(nGroup)) {
+    nGroup$lower[i] <- nGroup$lower[i - 1] + nGroup$spanDeg[i - 1]
+  }
   nGroup$upper <- nGroup$lower + nGroup$spanDeg
 
   if (addGap) {
@@ -36,7 +39,7 @@ bound <- function(nodes, gap = .05, addGap = T) {
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-nodePos <- function(nodes, networkGroup, edgeRad = 0.975, groupRad = 0.5, gapEdge = 0.1, addGap = T) {
+nodePos <- function(nodes, networkGroup, edgeRad = 0.975, groupRad = 0.5, gapEdge = 0.1, addGap = TRUE) {
   # Add x and y columns to nodes and networkGroup data
   nodes$y <- nodes$x <- 0
   networkGroup$y <- networkGroup$x <- 0
@@ -67,9 +70,7 @@ nodePos <- function(nodes, networkGroup, edgeRad = 0.975, groupRad = 0.5, gapEdg
     networkGroup$y[i] <- groupPos$y
   }
 
-  metanetwork <- list()
-  metanetwork$nodes <- nodes
-  metanetwork$networkGroup <- networkGroup
+  metanetwork <- list(nodes = nodes, networkGroup = networkGroup)
   metanetwork
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
@@ -87,9 +88,7 @@ linkCol <- function(links, networkGroup, focus = NULL, colLink = "#876b40", shad
   if (is.null(focus)) {
     networkGroup$colNames <- shadowLink
     networkGroup$colBox <- networkGroup$col
-  }
-
-  if (!is.null(focus)) {
+  } else {
     # Box colors for subnetworks
     uid <- networkGroup$Var1 %in% focus
     networkGroup$colNames <- networkGroup$col
@@ -124,9 +123,7 @@ linkCol <- function(links, networkGroup, focus = NULL, colLink = "#876b40", shad
     }
   }
 
-  metanetwork <- list()
-  metanetwork$links <- links
-  metanetwork$networkGroup <- networkGroup
+  metanetwork <- list(links = links, networkGroup = networkGroup)
   metanetwork
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
@@ -148,7 +145,7 @@ boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, n
     colBox <- rep(colBox, nrow(links))
   }
 
-  for (i in 1:nrow(networkGroup)) {
+  for (i in seq_len(nrow(networkGroup))) {
     a <- coordCircle(
       theta = seq(networkGroup$lower[i],
         networkGroup$upper[i],
@@ -165,15 +162,19 @@ boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, n
       radius = rad2
     )
 
-    if (type == "box") polygon(rbind(a, b, a[1L, ]), col = colBox[i], ...)
-    if (type == "line") lines(a, col = "#000000", lwd = 3)
+    if (type == "box") {
+      graphics::polygon(rbind(a, b, a[1L, ]), col = colBox[i], ...)
+    }
+    if (type == "line") {
+      graphics::lines(a, col = "#000000", lwd = 3)
+    }
 
     if (addNames) {
       middle <- mean(c(
         networkGroup$lower[i],
         networkGroup$upper[i]
       ))
-      clockwise <- if (middle > pi) F else T
+      clockwise <- middle <= pi
       plotrix::arctext(
         x = as.character(networkGroup$Var1[i]),
         radius = mean(c(rad1, rad2)),
@@ -190,7 +191,7 @@ boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, n
 
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 plotLinks <- function(nodes, links, networkGroup, ...) {
-  for (i in 1:nrow(links)) {
+  for (i in seq_len(nrow(links))) {
     link <- links[i, ]
     edgeFromID <- which(nodes$category == link$from)
     edgeToID <- which(nodes$category == link$to)
@@ -212,7 +213,7 @@ plotLinks <- function(nodes, links, networkGroup, ...) {
       )
     }
 
-    lines(xspline(linkPath$x, linkPath$y, shape = 1, draw = FALSE), col = links$col[i], ...)
+    graphics::lines(graphics::xspline(linkPath$x, linkPath$y, shape = 1, draw = FALSE), col = links$col[i], ...)
   }
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
@@ -247,7 +248,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
       x1 = id,
       x2 = id + .9,
       y1 = 0,
-      y2 = 1,
+      y2 = 1
     )
 
   # Networks
@@ -255,7 +256,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
     dplyr::group_by(network) |>
     dplyr::summarise(x1 = min(x1), x2 = max(x2))
 
-  png(
+  grDevices::png(
     "metanetwork_legend.png",
     res = res,
     width = 50 * nCol,
@@ -264,18 +265,18 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
   )
 
   # Plot
-  par(mar = c(.5, .5, .5, .5), bg = "#ffffff")
-  graphicsutils::plot0(x = c(1, nCol + 1), y = c(3, -nRow))
+  graphics::par(mar = c(.5, .5, .5, .5), bg = "#ffffff")
+  plot0(x = c(1, nCol + 1), y = c(3, -nRow))
 
   # Graphical elements
   xG <- .05
 
   # Networks
-  for (i in 1:nrow(net)) {
-    lines(x = c(net$x1[i], net$x2[i]), y = c(1.25, 1.25), lwd = 2)
+  for (i in seq_len(nrow(net))) {
+    graphics::lines(x = c(net$x1[i], net$x2[i]), y = c(1.25, 1.25), lwd = 2)
   }
 
-  text(
+  graphics::text(
     x = net$x1,
     y = 2,
     labels = net$network,
@@ -285,8 +286,8 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
   )
 
   # Subnetworks
-  rect(sub$x1, sub$y1, sub$x2, sub$y2, col = sub$col, border = sub$col)
-  text(
+  graphics::rect(sub$x1, sub$y1, sub$x2, sub$y2, col = sub$col, border = sub$col)
+  graphics::text(
     x = sub$x1 + xG,
     y = .5,
     labels = sub$subnetwork,
@@ -296,7 +297,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
   )
 
   # Categories
-  text(
+  graphics::text(
     x = cat$x + xG,
     y = -cat$y,
     labels = cat$labels,
@@ -304,7 +305,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
     cex = textSize * .85
   )
 
-  dev.off()
+  grDevices::dev.off()
   # ------------------------------------------------------------------------------------------
 
   # Combine figures together
@@ -319,4 +320,86 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
   )
 
   file.remove("metanetwork_legend.png")
+}
+
+
+
+# borrowed from https://github.com/inSileco/graphicsutils/blob/master/R/plot0.R
+plot0 <- function(
+    x = c(-1, 1), y = NULL, fill = NULL, text = NULL,
+    grid.col = NULL, grid.lwd = 1, grid.lty = 1, ...) {
+  ##
+  args <- list(...)
+  args_txt <- args[
+    names(args) %in% methods::formalArgs(graphics::text.default)
+  ]
+  deft <- list(ann = FALSE, axes = FALSE, type = "n")
+  # default behavior for matrix and vectors
+  if (NCOL(as.matrix(x)) > 1 && is.null(y)) {
+    if (is.null(y)) {
+      y <- x[, 2L]
+    }
+    x <- x[, 1L]
+  } else {
+    if (is.null(y)) {
+      y <- x
+    } else {
+      stopifnot(length(x) == length(y))
+    }
+  }
+  #
+  coor <- list(x = x, y = y)
+
+  ##
+  if (length(args) > 0) {
+    id <- which(names(deft) %in% names(args))
+    if (length(id) > 0) {
+      deft <- deft[-id]
+    }
+    do.call(graphics::plot.default, args = as.list(c(coor, args, deft)))
+  } else {
+    graphics::plot.default(x = x, y = y, ann = FALSE, axes = FALSE, type = "n")
+  }
+
+  ##
+  if (!is.null(fill)) {
+    plotAreaColor(color = fill)
+  }
+  #
+  if (!is.null(grid.col)) {
+    graphics::grid(col = grid.col, lty = grid.lty, lwd = grid.lwd)
+  }
+
+  ##
+  if (!is.null(text)) {
+    do.call(graphics::text.default, args = as.list(c(
+      x = mean(x), y = mean(y),
+      labels = as.character(text), args_txt
+    )))
+  }
+  ##
+  invisible(NULL)
+}
+
+# borrowed from https://github.com/inSileco/graphicsutils/blob/master/R/plotAreaColor.R
+plotAreaColor <- function(color = "grey80", border = NA, ...) {
+  args <- list(...)
+  lp <- graphics::par()$usr
+  coor <- list(
+    xleft = lp[1L], ybottom = lp[3L], xright = lp[2L], ytop = lp[4L]
+  )
+  if (!is.null(names(color))) {
+    names(color) <- NULL
+  }
+  ##
+  if (length(args) > 0) {
+    do.call(
+      graphics::rect,
+      args = as.list(c(coor, border = border, col = color, args))
+    )
+  } else {
+    do.call(graphics::rect, args = as.list(c(coor, border = border, col = color)))
+  }
+  ##
+  invisible(NULL)
 }

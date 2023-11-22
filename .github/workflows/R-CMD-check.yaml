@@ -1,0 +1,67 @@
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+
+name: R CMD Check
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-22.04, r: 'release'}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: ${{ matrix.config.cran }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::rcmdcheck
+            any::covr
+            any::goodpractice
+            any::lintr
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+          
+      - name: Code coverage
+        if: matrix.config.os == 'ubuntu-22.04'
+        run: covr::package_coverage()
+        shell: Rscript {0}
+
+      - name: Good practices
+        if: matrix.config.os == 'ubuntu-22.04'
+        run: |
+          goodpractice::gp(checks = c(
+            "cyclocomp",
+            "no_import_package_as_a_whole",
+            "no_export_pattern"
+          ))
+        shell: Rscript {0}
+
+      - name: Lint
+        if: matrix.config.os == 'ubuntu-22.04'
+        run: |
+          library(lintr)
+          lint_package(linters = with_defaults(object_name_linter("camelCase"), line_length_linter(160L), object_length_linter(length = 60L)))
+        shell: Rscript {0}
