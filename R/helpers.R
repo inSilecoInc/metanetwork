@@ -174,7 +174,7 @@ boxGroup <- function(links, networkGroup, rad1 = .95, rad2 = 1, colBox = NULL, n
         networkGroup$lower[i],
         networkGroup$upper[i]
       ))
-      clockwise <- middle > pi
+      clockwise <- middle <= pi
       plotrix::arctext(
         x = as.character(networkGroup$Var1[i]),
         radius = mean(c(rad1, rad2)),
