@@ -13,8 +13,8 @@ Authors@R: c(
            email   = "kcazelle@uoguelph.ca", 
            comment = c(ORCID = "0000-0001-6619-9874")))
 Description: Package to generate circular hierarchical edge bundling graphs to represent metanetworks.
-URL: https://github.com/david-beauchesne/rcea
-BugReports: https://github.com/david-beauchesne/rcea/issues
+URL: https://github.com/inSilecoInc/metanetwork
+BugReports: https://github.com/inSilecoInc/metanetwork/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -265,7 +265,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
   )
 
   # Plot
-  graphics::par(mar = c(.5, .5, .5, .5), bg = "#ffffff")
+  graphics::par(mar = c(.5, .5, .5, .5), bg = "#ffffff00")
   plot0(x = c(1, nCol + 1), y = c(3, -nRow))
 
   # Graphical elements
@@ -307,10 +307,23 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
 
   grDevices::dev.off()
   # ------------------------------------------------------------------------------------------
-
-  # Combine figures together
+  # Figures of interest
   i1 <- magick::image_read("metanetwork.png")
   i2 <- magick::image_read("metanetwork_legend.png")
+
+  # Size of images
+  i1s <- magick::image_info(i1)$width
+  i2s <- magick::image_info(i2)$width
+
+  # Resize legend if size is greater than size of metanetwork
+  if (i2s > i1s) i2 <- magick::image_scale(i2, i1s * .9)
+
+  # Add left/right border to center
+  w <- magick::image_info(i2)$width
+  b <- (i1s - w) / 2
+  i2 <- magick::image_border(i2, "#ffffff00", b)
+
+  # Combine figures together
   img <- magick::image_append(c(i1, i2), stack = TRUE)
 
   magick::image_write(

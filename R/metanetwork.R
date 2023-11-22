@@ -6,6 +6,7 @@
 #' @param nodeSize numeric, size of nodes, if not provided in `nodes`. Can be a single numeric value or a numeric vector of length = `nrow(nodes)`. If using frequencies or other numeric values ranging from 0 to infinity, you should normalize the values so that the maximum value is at least no greater than 5 depending on the size of the graph.
 #' @param colLink color of links, if not provided in `links`. Can be a single numeric value or a numeric vector of length = `nrow(links)`.
 #' @param linkWidth numeric, width of links, if not provided in `links`. Can be a single numeric value or a numeric vector of length = `nrow(links)`.
+#' @param textSize numeric, size of text displayed on figure. All text displayed is a proportion of this parameter.
 #' @param rad1 lower boundary for placement of individual network titles
 #' @param rad2 upper boundary for placement of individual network titles
 #' @param focus character, name of network(s) to focus on; if length(focus) == 1, all links towards a single network; if length(focus) > 1, links focused on identified networks
@@ -39,6 +40,7 @@ metanetwork <- function(
     nodeSize = 0.5,
     colLink = "#876b40",
     linkWidth = 1,
+    textSize = 1,
     rad1 = .925,
     rad2 = 1,
     focus = NULL,
@@ -174,7 +176,7 @@ metanetwork <- function(
     )
   }
 
-  graphics::par(mar = c(0, 0, 0, 0), family = "serif")
+  graphics::par(mar = c(0, 0, 0, 0), family = "serif", bg = "#ffffff00")
   plot0(x = c(-1.1, 1.1))
 
   # Networks
@@ -184,7 +186,7 @@ metanetwork <- function(
     rad1 = 1.03, rad2 = 1.13,
     colBox = "#00000000", colNames = "#000000",
     border = "#000000",
-    cexNetwork = 2,
+    cexNetwork = textSize * 2,
     type = "line"
   )
 
@@ -196,7 +198,8 @@ metanetwork <- function(
     rad2 = rad2,
     colBox = networkGroup$colBox,
     colNames = networkGroup$colNames,
-    border = "transparent"
+    border = "transparent",
+    cexNetwork = textSize
   )
 
   # Links
@@ -223,7 +226,7 @@ metanetwork <- function(
   )
 
   # Add labels if legend
-  if (legend) graphics::text(x = labs$x, y = labs$y, labels = labs$lab, cex = .45)
+  if (legend) graphics::text(x = labs$x, y = labs$y, labels = labs$lab, cex = textSize * .6)
 
   if (export) grDevices::dev.off()
 
@@ -232,7 +235,7 @@ metanetwork <- function(
     metanetwork_legend(
       labs = labs,
       res = res,
-      textSize = 1
+      textSize = textSize
     )
   }
 }
