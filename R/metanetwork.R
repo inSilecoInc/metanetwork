@@ -7,15 +7,15 @@
 #' @param colLink color of links, if not provided in `links`. Can be a single numeric value or a numeric vector of length = `nrow(links)`.
 #' @param linkWidth numeric, width of links, if not provided in `links`. Can be a single numeric value or a numeric vector of length = `nrow(links)`.
 #' @param textSize numeric, size of text displayed on figure. All text displayed is a proportion of this parameter.
-#' @param rad1 lower boundary for placement of individual network titles
-#' @param rad2 upper boundary for placement of individual network titles
-#' @param focus character, name of network(s) to focus on; if length(focus) == 1, all links towards a single network; if length(focus) > 1, links focused on identified networks
-#' @param shadowNode logical, add a shadow around nodes
-#' @param shadowLink color of links that are not focused on
-#' @param export logical, export figure as png image
-#' @param res resolution of png image
-#' @param img_size height and width of png image
-#' @param legend logical, add a legend to png image
+#' @param rad1,rad2 lower and upper boundary for placement of individual network titles.
+#' @param focus character, name of network(s) to focus on; if length(focus) == 1, all links towards a single network; if length(focus) > 1, links focused on identified networks.
+#' @param shadowNode logical, add a shadow around nodes.
+#' @param shadowLink color of links that are not focused on.
+#' @param export logical, export figure as png image.
+#' @param filename filename of the (ignored if `export` is FALSE).
+#' @param res resolution of png image.
+#' @param img_size height and width of png image.
+#' @param legend logical, add a legend to png image.
 #'
 #' @examples
 #' # Data 1
@@ -41,12 +41,13 @@ metanetwork <- function(
     colLink = "#876b40",
     linkWidth = 1,
     textSize = 1,
-    rad1 = .925,
+    rad1 = 0.925,
     rad2 = 1,
     focus = NULL,
     shadowNode = TRUE,
     shadowLink = "#f4f4f4",
     export = TRUE,
+    filename = "metanetwork.png",
     res = 300,
     img_size = 200,
     legend = TRUE) {
@@ -69,7 +70,7 @@ metanetwork <- function(
 
   # Check if data has the proper columns
   chk <- all(c("network", "subnetwork", "category") %in% colnames(nodes))
-  if (!chk) stop("Columns `network`, `subnetwork` and `category` must be present in the data")
+  if (!chk) stop("Columns `network`, `subnetwork` and `category` must be present in `nodes`.")
 
   # Check if colors are included in the data
   chk <- "col" %in% colnames(nodes)
@@ -101,7 +102,7 @@ metanetwork <- function(
 
   # Check if data has the proper columns
   chk <- all(c("from", "to") %in% colnames(links))
-  if (!chk) stop("Columns `from` and `to` must be present in the data")
+  if (!chk) stop("Columns `from` and `to` must be present in `links`.")
 
   # Check if colors are included in the data
   chk <- "col" %in% colnames(links)
@@ -168,7 +169,7 @@ metanetwork <- function(
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
   if (export) {
     grDevices::png(
-      "metanetwork.png",
+      filename,
       res = res,
       width = img_size,
       height = img_size,
@@ -238,4 +239,6 @@ metanetwork <- function(
       textSize = textSize
     )
   }
+
+  invisible(filename)
 }

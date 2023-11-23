@@ -11,12 +11,14 @@ metanetwork(
   nodeSize = 0.5,
   colLink = "#876b40",
   linkWidth = 1,
+  textSize = 1,
   rad1 = 0.925,
   rad2 = 1,
   focus = NULL,
   shadowNode = TRUE,
   shadowLink = "#f4f4f4",
   export = TRUE,
+  filename = "metanetwork.png",
   res = 300,
   img_size = 200,
   legend = TRUE
@@ -35,23 +37,25 @@ metanetwork(
 
 \item{linkWidth}{numeric, width of links, if not provided in \code{links}. Can be a single numeric value or a numeric vector of length = \code{nrow(links)}.}
 
-\item{rad1}{lower boundary for placement of individual network titles}
+\item{textSize}{numeric, size of text displayed on figure. All text displayed is a proportion of this parameter.}
 
-\item{rad2}{upper boundary for placement of individual network titles}
+\item{rad1, rad2}{lower and upper boundary for placement of individual network titles.}
 
-\item{focus}{character, name of network(s) to focus on; if length(focus) == 1, all links towards a single network; if length(focus) > 1, links focused on identified networks}
+\item{focus}{character, name of network(s) to focus on; if length(focus) == 1, all links towards a single network; if length(focus) > 1, links focused on identified networks.}
 
-\item{shadowNode}{logical, add a shadow around nodes}
+\item{shadowNode}{logical, add a shadow around nodes.}
 
-\item{shadowLink}{color of links that are not focused on}
+\item{shadowLink}{color of links that are not focused on.}
 
-\item{export}{logical, export figure as png image}
+\item{export}{logical, export figure as png image.}
 
-\item{res}{resolution of png image}
+\item{filename}{filename of the (ignored if \code{export} is FALSE).}
 
-\item{img_size}{height and width of png image}
+\item{res}{resolution of png image.}
 
-\item{legend}{logical, add a legend to png image}
+\item{img_size}{height and width of png image.}
+
+\item{legend}{logical, add a legend to png image.}
 }
 \description{
 Function to plot metanetworks using hierarchical edge bundling
