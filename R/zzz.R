@@ -1,5 +1,6 @@
 # internals
 #' @importFrom utils globalVariables
+#' @importFrom shiny runApp
 #' @noRd
 #' 
 NULL 

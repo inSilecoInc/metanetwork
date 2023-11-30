@@ -1,6 +1,6 @@
 Package: metanetwork
 Title: Circular Hierarchical Edge Bundling Graphs
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Authors@R: c(
     person(given   = "David",
            family  = "Beauchesne",
@@ -24,12 +24,14 @@ Depends:
        R (>= 4.1.0)
 Imports:
        dplyr,
+       fs,
        glue,
        graphics,
        grDevices,
        magick,
        methods,
        plotrix,
+       shiny (>= 1.7.0),
        utils,
        viridis,
        vroom
