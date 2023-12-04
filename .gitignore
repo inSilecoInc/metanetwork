@@ -1,3 +1,6 @@
+# Ignore built fig file
+inst/app/www/img/export_fig.png
+
 # History files
 .Rhistory
 .Rapp.history

@@ -36,7 +36,7 @@
 metanetwork <- function(
     nodes,
     links,
-    colNode = viridis::viridis,
+    colNode = choose_pal("viridis"),
     nodeSize = 0.5,
     colLink = "#876b40",
     linkWidth = 1,
@@ -76,11 +76,13 @@ metanetwork <- function(
   chk <- "col" %in% colnames(nodes)
   if (!chk) {
     # Add colors
-    if (is.character(colNode)) {
-      nodes$col <- colNode
-    } else {
+    if (is.function(colNode)) {
       cols <- as.factor(nodes$subnetwork) |> as.numeric()
       nodes$col <- colNode(max(cols))[cols]
+    } else if (is.character(colNode)) {
+      nodes$col <- colNode
+    } else {
+      nodes$col <- NA
     }
   }
 
@@ -178,7 +180,7 @@ metanetwork <- function(
   }
 
   graphics::par(mar = c(0, 0, 0, 0), family = "serif", bg = "#ffffff00")
-  plot0(x = c(-1.1, 1.1))
+  plot0(x = c(-1.1, 1.1), asp = 1)
 
   # Networks
   boxGroup(
@@ -236,7 +238,8 @@ metanetwork <- function(
     metanetwork_legend(
       labs = labs,
       res = res,
-      textSize = textSize
+      textSize = textSize,
+      filename
     )
   }
 
