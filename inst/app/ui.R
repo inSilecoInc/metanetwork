@@ -41,16 +41,7 @@ ui <- fluidPage(
           icon = icon("gear"),
           hr(),
           numericInput("nodeSize", "Taille des noeuds", value = 1, step = 0.05),
-          selectInput("colNode", "Palette de couleurs", list(
-              "viridis" = viridis::viridis,
-              "magma" = viridis::magma,
-              "inferno" = viridis::inferno,
-              "plasma" = viridis::plasma,
-              "cividis" = viridis::cividis,
-              "rocket" = viridis::rocket,
-              "mako" = viridis::mako,
-              "turbo" = viridis::turbo
-          )),
+          selectInput("colNode", "Palette de couleurs", nodeColPal)
         ),
         tabPanel("Liens",
           icon = icon("gear"),

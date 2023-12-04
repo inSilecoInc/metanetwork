@@ -36,7 +36,7 @@
 metanetwork <- function(
     nodes,
     links,
-    colNode = choose_pal("viridis"),
+    colNode = NULL,
     nodeSize = 0.5,
     colLink = "#876b40",
     linkWidth = 1,
@@ -73,17 +73,29 @@ metanetwork <- function(
   if (!chk) stop("Columns `network`, `subnetwork` and `category` must be present in `nodes`.")
 
   # Check if colors are included in the data
-  chk <- "col" %in% colnames(nodes)
-  if (!chk) {
-    # Add colors
-    if (is.function(colNode)) {
-      cols <- as.factor(nodes$subnetwork) |> as.numeric()
-      nodes$col <- colNode(max(cols))[cols]
-    } else if (is.character(colNode)) {
-      nodes$col <- colNode
+  cols <- as.factor(nodes$subnetwork) |> 
+    as.numeric()
+  if (is.null(colNode)) {
+    if ("col" %in% colnames(nodes)) {
+      cli::cli_alert_info("`col` found in column names")
     } else {
-      nodes$col <- NA
+      cli::cli_alert_warning(
+        "`col` not found in column names, defaulting to viridis"
+      )
+      nodes$col <- viridis::viridis(max(cols))[cols]
     }
+  } else {
+     # Add colors
+     if (is.function(colNode)) {
+       nodes$col <- colNode(max(cols))[cols]
+     } else if (is.character(colNode)) {
+       nodes$col <- colNode
+     } else {
+       cli::cli_alert_warning(
+         "wrong color type, defaulting to viridis"
+       )
+       nodes$col <- viridis::viridis(max(cols))[cols]
+     }
   }
 
   # Check if node sizes are included in the data
