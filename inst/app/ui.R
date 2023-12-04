@@ -51,7 +51,7 @@ ui <- fluidPage(
           numericInput("linkWidth", "Taille des liens", value = 1, step = 0.05),
           selectInput("focus", 
             "Groupe de liens mis en évidence", 
-            choices = grp_foc
+            choices = c("All")
           )
         )
       ),

@@ -43,7 +43,7 @@ metanetwork <- function(
     textSize = 1,
     rad1 = 0.925,
     rad2 = 1,
-    focus = NULL,
+    focus = "all",
     shadowNode = TRUE,
     shadowLink = "#f4f4f4",
     export = TRUE,
@@ -59,7 +59,7 @@ metanetwork <- function(
   # --------------------
   if (legend & !export) stop("Legends are only available when a figure is exported. Set `export = TRUE` if you wish to produce a legend.")
 
-  if (focus == "") {
+  if (focus == "all") {
     focus <- NULL
   }
 

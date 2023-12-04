@@ -17,3 +17,5 @@ nodeColPal <- c(
     "mako",
     "turbo"
 )
+
+googlesheets4::gs4_deauth()
