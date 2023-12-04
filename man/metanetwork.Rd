@@ -14,7 +14,7 @@ metanetwork(
   textSize = 1,
   rad1 = 0.925,
   rad2 = 1,
-  focus = NULL,
+  focus = "all",
   shadowNode = TRUE,
   shadowLink = "#f4f4f4",
   export = TRUE,

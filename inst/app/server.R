@@ -13,9 +13,9 @@ server <- function(input, output, session) {
                             col_names = TRUE,
                             col_types = "cccd")
 
-    grp_foc <- as.list(unique(r$nodes$subnetwork))
-    names(grp_foc) <- unlist(grp_foc)
-    grp_foc <- c(All = "", grp_foc)
+    grp_foc <- c(list(All = "all"), as.list(unique(r$nodes$subnetwork)))
+    names(grp_foc)[-1] <- unlist(grp_foc[-1])
+    updateSelectInput(session, "focus", choices = grp_foc)
   })
 
   # OUTPUTS
