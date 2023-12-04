@@ -1,9 +1,5 @@
 server <- function(input, output, session) {
   # INPUTS
-  nodes <- system.file("extdata", "nodes_wo_col.csv", package = "metanetwork") |>
-    read.csv()
-  links <- system.file("extdata", "links.csv", package = "metanetwork") |>
-    read.csv()
 
   output$downloadFig <- shiny::downloadHandler(
     filename = function() input$filename,
@@ -14,18 +10,19 @@ server <- function(input, output, session) {
   ## Enable option based on columns names source file
   shiny::observeEvent(nodes, {
     if ("col" %in% names(nodes)) {
-        shinyjs::disable("colNode")
+      shinyjs::disable("colNode")
     } else {
-        shinyjs::enable("colNode")
+      shinyjs::enable("colNode")
     }
     if ("size" %in% names(nodes)) {
-        shinyjs::disable("nodeSize")
+      shinyjs::disable("nodeSize")
     } else {
-        shinyjs::enable("nodeSize")
+      shinyjs::enable("nodeSize")
     }
   })
 
-  output$metanetwork <- shiny::renderImage({
+  output$metanetwork <- shiny::renderImage(
+    {
       # Generate the PNG
       metanetwork(
         nodes,
@@ -48,11 +45,14 @@ server <- function(input, output, session) {
       )
 
       # Return a list containing the filename
-      list(src = "www/img/export_fig.png",
-          contentType = 'image/png',
-          width = "60%",
-          style = "display: block; margin-left: auto; margin-right: auto;",
-          alt = "This is alternate text")
-    }, deleteFile = FALSE)
-
+      list(
+        src = "www/img/export_fig.png",
+        contentType = "image/png",
+        width = "60%",
+        style = "display: block; margin-left: auto; margin-right: auto;",
+        alt = "This is alternate text"
+      )
+    },
+    deleteFile = FALSE
+  )
 }

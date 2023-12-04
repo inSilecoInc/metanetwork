@@ -428,7 +428,8 @@ choose_pal <- function(name) {
     "cividis" = viridis::cividis,
     "rocket" = viridis::rocket,
     "mako" = viridis::mako,
-    "turbo" = viridis::turbo
+    "turbo" = viridis::turbo,
+    NULL
   )
   return(pal)
 }

@@ -7,7 +7,7 @@
 metanetwork(
   nodes,
   links,
-  colNode = viridis::viridis,
+  colNode = NULL,
   nodeSize = 0.5,
   colLink = "#876b40",
   linkWidth = 1,
