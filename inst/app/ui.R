@@ -11,7 +11,6 @@ ui <- fluidPage(
     sidebarPanel(
       # Title
       h3(div("Diagramme d'accord")),
-
       # Panels
       tabsetPanel(
         id = "params",
@@ -46,10 +45,9 @@ ui <- fluidPage(
         tabPanel("Liens",
           icon = icon("gear"),
           hr(),
-          textInput("colLink", "Couleur des liens"),
+          colourpicker::colourInput("colLink", "Couleur des liens", "#876b40"),
           numericInput("linkWidth", "Taille des liens", value = 1, step = 0.05),
           textInput("focus", "Liens mise en évidence"),
-          textInput("shadowLink", "Couleur des liens mise en évidence")
         )
       ),
       hr(),

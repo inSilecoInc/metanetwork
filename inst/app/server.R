@@ -18,7 +18,7 @@ server <- function(input, output, session) {
       shinyjs::disable("nodeSize")
     } else {
       shinyjs::enable("nodeSize")
-    }
+    } 
   })
 
   output$metanetwork <- shiny::renderImage(
@@ -29,14 +29,14 @@ server <- function(input, output, session) {
         links,
         colNode = choose_pal(input$colNode),
         nodeSize = input$nodeSize,
-        colLink = "#876b40",
+        colLink = input$colLink,
         linkWidth = input$linkWidth,
         textSize = input$textSize,
         rad1 = input$rad1,
         rad2 = input$rad2,
-        focus = NULL,
+        focus = input$focus,
         shadowNode = input$shadowNode,
-        shadowLink = "#f4f4f4",
+        shadowLink = input$shadowLink,
         export = TRUE,
         filename = "www/img/export_fig.png",
         res = input$res,

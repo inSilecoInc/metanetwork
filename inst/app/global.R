@@ -19,5 +19,5 @@ nodeColPal <- c(
 )
 
 if ("col" %in% names(nodes)) {
-    nodeColPal <- c("from file", nodeColPal)
+    nodeColPal <- c("Depuis le fichier source", nodeColPal)
 }

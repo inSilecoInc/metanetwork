@@ -37,6 +37,7 @@ Imports:
        viridis,
        vroom
 Suggests: 
+       colourpicker,
        testthat (>= 3.0.0),
        shinycssloaders,
        shinyjs
