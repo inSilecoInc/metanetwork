@@ -1,32 +1,36 @@
 server <- function(input, output, session) {
+  
   # INPUTS
+  r <- reactiveValues()
 
+  observeEvent(input$googledrive_link,{
+    r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
+                            sheet = "noeuds",
+                            col_names = TRUE,
+                            col_types = "ccccd")
+    r$links <- googlesheets4::read_sheet(ss = input$googledrive_link,
+                            sheet = "liens",
+                            col_names = TRUE,
+                            col_types = "cccd")
+
+    grp_foc <- as.list(unique(r$nodes$subnetwork))
+    names(grp_foc) <- unlist(grp_foc)
+    grp_foc <- c(All = "", grp_foc)
+  })
+
+  # OUTPUTS
   output$downloadFig <- shiny::downloadHandler(
     filename = function() input$filename,
     contentType = "image/png",
     content = function(file) file.copy("www/img/export_fig.png", file)
   )
 
-  ## Enable option based on columns names source file
-  shiny::observeEvent(nodes, {
-    if ("col" %in% names(nodes)) {
-      shinyjs::disable("colNode")
-    } else {
-      shinyjs::enable("colNode")
-    }
-    if ("size" %in% names(nodes)) {
-      shinyjs::disable("nodeSize")
-    } else {
-      shinyjs::enable("nodeSize")
-    } 
-  })
-
   output$metanetwork <- shiny::renderImage(
     {
       # Generate the PNG
       metanetwork(
-        nodes,
-        links,
+        r$nodes,
+        r$links,
         colNode = choose_pal(input$colNode),
         nodeSize = input$nodeSize,
         colLink = "#876b40",#input$colLink,
