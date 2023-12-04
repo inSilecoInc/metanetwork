@@ -45,9 +45,12 @@ ui <- fluidPage(
         tabPanel("Liens",
           icon = icon("gear"),
           hr(),
-          colourpicker::colourInput("colLink", "Couleur des liens", "#876b40"),
+          #colourpicker::colourInput("colLink", "Couleur des liens", "#876b40"),
           numericInput("linkWidth", "Taille des liens", value = 1, step = 0.05),
-          textInput("focus", "Liens mise en évidence"),
+          selectInput("focus", 
+            "Groupe de liens mis en évidence", 
+            choices = grp_foc
+          )
         )
       ),
       hr(),

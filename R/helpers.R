@@ -123,8 +123,7 @@ linkCol <- function(links, networkGroup, focus = NULL, colLink = "#876b40", shad
     }
   }
 
-  metanetwork <- list(links = links, networkGroup = networkGroup)
-  metanetwork
+  list(links = links, networkGroup = networkGroup)
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 

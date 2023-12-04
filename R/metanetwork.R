@@ -59,6 +59,10 @@ metanetwork <- function(
   # --------------------
   if (legend & !export) stop("Legends are only available when a figure is exported. Set `export = TRUE` if you wish to produce a legend.")
 
+  if (focus == "") {
+    focus <- NULL
+  }
+
   # --------------------
   # NODES
   # --------------------
