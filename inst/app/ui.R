@@ -10,7 +10,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       # Title
-      h3(div("Diagramme d'accord")),
+      h2("Diagramme à cordes"),
       # Panels
       tabsetPanel(
         id = "params",
@@ -34,6 +34,7 @@ ui <- fluidPage(
           actionButton("hyperlink", "Se rendre sur la feuille Google", 
             icon = icon("th"),
             onclick = textOutput("googledrive_hyperlink")),
+          hr(),
           h4("Paramètres généraux"),
           numericInput("textSize", "Taille de la police",
             value = 1, step = 0.05),
@@ -86,7 +87,6 @@ ui <- fluidPage(
     # RIGHT PANEL
     mainPanel(
       shinycssloaders::withSpinner(
-        color = "#37abc8",
         imageOutput("metanetwork")
       )
     )

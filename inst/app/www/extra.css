@@ -1,7 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
 
 body {
   font-family: "Poppins";
+  color: #4a4a4a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Merriweather";
+  color: #4a4a4a;
+  font-weight: 600;
+}
+
+h2 {
+  font-weight: 700;
+}
+
+label {
+  color: #4a4a4a;
+  font-weight: normal;
 }
 
 #footer {
