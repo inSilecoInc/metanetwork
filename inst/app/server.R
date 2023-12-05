@@ -1,11 +1,11 @@
 server <- function(input, output, session) {
   
   # INPUTS
-  r <- reactiveValues()
+  r <- shiny::reactiveValues()
 
-  observeEvent(
-      input$googledrive_link, {
-      r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
+  # Reload data function
+  reloadData <- function() {
+          r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
                               sheet = "noeuds",
                               col_names = TRUE,
                               col_types = "ccccd")
@@ -16,7 +16,23 @@ server <- function(input, output, session) {
 
     grp_foc <- c(list(All = "all"), as.list(unique(r$nodes$subnetwork)))
     names(grp_foc)[-1] <- unlist(grp_foc[-1])
-    updateSelectInput(session, "focus", choices = grp_foc)
+    shiny::updateSelectInput(session, "focus", choices = grp_foc)
+  }
+
+  shiny::observeEvent({
+    input$googledrive_link
+    }, {
+      reloadData()
+  })
+
+  shiny::observeEvent({
+    input$reloadDataButton
+    }, {
+      reloadData()
+  })
+
+  shiny::observeEvent(input$hyperlink, {
+    browseURL(input$googledrive_link)
   })
 
   # OUTPUTS
@@ -25,10 +41,6 @@ server <- function(input, output, session) {
     contentType = "image/png",
     content = function(file) file.copy("www/img/export_fig.png", file)
   )
-
-  output$googledrive_hyperlink <- renderText({
-      paste0("window.open('", input$googledrive_link,"', '_blank')")
-  })
 
   output$metanetwork <- shiny::renderImage(
     {
@@ -57,8 +69,7 @@ server <- function(input, output, session) {
         src = "www/img/export_fig.png",
         contentType = "image/png",
         width = "60%",
-        style = "display: block; margin-left: auto; margin-right: auto;",
-        alt = "This is alternate text"
+        style = "display: block; margin-left: auto; margin-right: auto;"
       )
     },
     deleteFile = FALSE
