@@ -20,8 +20,8 @@ ui <- fluidPage(
           hr(),
           h4("Fichiers sources"),
           textInput(inputId = "googledrive_link",
-                         label = "Lien vers le classeur Google Drive",
-                         value = "https://docs.google.com/spreadsheets/d/15xejjdLDYrjSbuO4Ufb83x38vBASi7bqTDF0svO22Uc/edit?usp=sharing"),
+              label = "Lien vers le classeur Google Drive",
+              value = "https://docs.google.com/spreadsheets/d/15xejjdLDYrjSbuO4Ufb83x38vBASi7bqTDF0svO22Uc/edit?usp=sharing"),
           helpText("Remarque : la feuille de calcul 
           Google Drive doit être visible 
           par toute personne disposant du lien ; 

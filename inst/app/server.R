@@ -5,7 +5,7 @@ server <- function(input, output, session) {
 
   # Reload data function
   reloadData <- function() {
-          r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
+      r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
                               sheet = "noeuds",
                               col_names = TRUE,
                               col_types = "ccccd")
