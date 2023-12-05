@@ -5,18 +5,20 @@ server <- function(input, output, session) {
 
   # Reload data function
   reloadData <- function() {
-      r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
-                              sheet = "noeuds",
-                              col_names = TRUE,
-                              col_types = "ccccd")
-      r$links <- googlesheets4::read_sheet(ss = input$googledrive_link,
-                              sheet = "liens",
-                              col_names = TRUE,
-                              col_types = "cccd")
+    r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
+                            sheet = "noeuds",
+                            col_names = TRUE,
+                            col_types = "ccccd")
+    r$links <- googlesheets4::read_sheet(ss = input$googledrive_link,
+                            sheet = "liens",
+                            col_names = TRUE,
+                            col_types = "cccd")
 
     grp_foc <- c(list(All = "all"), as.list(unique(r$nodes$subnetwork)))
     names(grp_foc)[-1] <- unlist(grp_foc[-1])
-    shiny::updateSelectInput(session, "focus", choices = grp_foc)
+
+    shiny::updateSelectInput(session, "focus",
+      choices = grp_foc, selected = "All")
   }
 
   shiny::observeEvent({
@@ -29,7 +31,7 @@ server <- function(input, output, session) {
     input$reloadDataButton
     }, {
       reloadData()
-  })
+  }, ignoreInit = TRUE)
 
   shiny::observeEvent(input$hyperlink, {
     browseURL(input$googledrive_link)
