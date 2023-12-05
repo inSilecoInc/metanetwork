@@ -22,9 +22,21 @@ ui <- fluidPage(
           textInput(inputId = "googledrive_link",
                          label = "Lien vers le classeur Google Drive",
                          value = "https://docs.google.com/spreadsheets/d/15xejjdLDYrjSbuO4Ufb83x38vBASi7bqTDF0svO22Uc/edit?usp=sharing"),
-          helpText("Remarque : la feuille de calcul Google Drive doit être visible par toute personne disposant du lien ; pour avoir une feuille de calcul bien structurée, le plus simple est de copier le document exemple : 'Fichier' -> 'Créer une copie'"),
+          helpText("Remarque : la feuille de calcul 
+          Google Drive doit être visible 
+          par toute personne disposant du lien ; 
+          pour avoir une feuille de calcul bien structurée, 
+          le plus simple est de copier le document exemple:
+           'Fichier' -> 'Créer une copie'"),
+          actionButton("reloadDataButton",
+            icon = icon("refresh"),
+            "Recharger les données"),
+          actionButton("hyperlink", "Se rendre sur la feuille Google", 
+            icon = icon("th"),
+            onclick = textOutput("googledrive_hyperlink")),
           h4("Paramètres généraux"),
-          numericInput("textSize", "Taille de la police", value = 1, step = 0.05),
+          numericInput("textSize", "Taille de la police",
+            value = 1, step = 0.05),
           checkboxInput("shadowNode", "Ombragement des noeuds", value = TRUE),
           hr(),
           h4("Largeur des barres de sous-réseaux"),
@@ -36,7 +48,7 @@ ui <- fluidPage(
           numericInput("res", "Resolution", value = 300, step = 10),
           numericInput("img_size", "Taille de l'image", value = 200, step = 10),
           checkboxInput("legend", "Afficher la légende", value = TRUE),
-          downloadButton('downloadFig', 'Télécharger la figure')
+          downloadButton("downloadFig", "Télécharger la figure")
         ),
         tabPanel("Noeuds",
           icon = icon("gear"),
@@ -50,7 +62,7 @@ ui <- fluidPage(
           #colourpicker::colourInput("colLink", "Couleur des liens", "#876b40"),
           numericInput("linkWidth", "Taille des liens", value = 1, step = 0.05),
           selectInput("focus", 
-            "Groupe de liens mis en évidence", 
+            "Groupe de liens mis en évidence",
             choices = c("All")
           )
         )

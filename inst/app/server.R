@@ -3,15 +3,16 @@ server <- function(input, output, session) {
   # INPUTS
   r <- reactiveValues()
 
-  observeEvent(input$googledrive_link,{
-    r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
-                            sheet = "noeuds",
-                            col_names = TRUE,
-                            col_types = "ccccd")
-    r$links <- googlesheets4::read_sheet(ss = input$googledrive_link,
-                            sheet = "liens",
-                            col_names = TRUE,
-                            col_types = "cccd")
+  observeEvent(
+      input$googledrive_link, {
+      r$nodes <- googlesheets4::read_sheet(ss = input$googledrive_link,
+                              sheet = "noeuds",
+                              col_names = TRUE,
+                              col_types = "ccccd")
+      r$links <- googlesheets4::read_sheet(ss = input$googledrive_link,
+                              sheet = "liens",
+                              col_names = TRUE,
+                              col_types = "cccd")
 
     grp_foc <- c(list(All = "all"), as.list(unique(r$nodes$subnetwork)))
     names(grp_foc)[-1] <- unlist(grp_foc[-1])
@@ -24,6 +25,10 @@ server <- function(input, output, session) {
     contentType = "image/png",
     content = function(file) file.copy("www/img/export_fig.png", file)
   )
+
+  output$googledrive_hyperlink <- renderText({
+      paste0("window.open('", input$googledrive_link,"', '_blank')")
+  })
 
   output$metanetwork <- shiny::renderImage(
     {
