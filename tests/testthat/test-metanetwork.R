@@ -7,15 +7,12 @@ test_that("metanetwork error", {
 })
 
 test_that("basic plot", {
-    # expect_snapshot_file(
-    #     metanetwork(nodes, links, legend = FALSE, export = TRUE, res = 72), 
-    #     "metanetwork.png"
-    # )
-    # expect_snapshot_file(
-    #     metanetwork(nodes, links, legend = TRUE, export = TRUE, res = 72),
-    #     "metanetwork_legend.png"
-    # )
+    # expect_snapshot_file( metanetwork(nodes, links,
+    # legend = FALSE, export = TRUE, res = 72),
+    # 'metanetwork.png' ) expect_snapshot_file(
+    # metanetwork(nodes, links, legend = TRUE, export =
+    # TRUE, res = 72), 'metanetwork_legend.png' )
 })
 
-# unlink("metanetwork.png")
-# unlink("metanetwork_legend.png")
+# unlink('metanetwork.png')
+# unlink('metanetwork_legend.png')
