@@ -25,185 +25,205 @@
 #'
 #' # Figure
 #' metanetwork(metanetwork:::nodes, metanetwork:::links)
-#' metanetwork(metanetwork:::nodes, metanetwork:::links, focus = 'Species')
-#' metanetwork(metanetwork:::nodes, metanetwork:::links, focus = c('Species', 'Drivers', 'Managers'))
+#' metanetwork(metanetwork:::nodes, metanetwork:::links, focus = "Species")
+#' metanetwork(metanetwork:::nodes, metanetwork:::links, focus = c("Species", "Drivers", "Managers"))
 #'
 #' # Data 2
-#' nodes <- system.file('extdata', 'nodes.csv', package = 'metanetwork') |> read.csv()
-#' links <- system.file('extdata', 'links.csv', package = 'metanetwork') |> read.csv()
+#' nodes <- system.file("extdata", "nodes.csv", package = "metanetwork") |> read.csv()
+#' links <- system.file("extdata", "links.csv", package = "metanetwork") |> read.csv()
 #' }
 #' @export
-metanetwork <- function(nodes, links, colNode = NULL, nodeSize = 0.5,
+metanetwork <- function(
+    nodes, links, colNode = NULL, nodeSize = 0.5,
     colLink = "#876b40", linkWidth = 1, textSize = 1, rad1 = 0.925,
     rad2 = 1, focus = "all", shadowNode = TRUE, shadowLink = "#f4f4f4",
     export = TRUE, filename = "metanetwork.png", res = 300, img_size = 200,
     legend = TRUE) {
-    # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    # # DATA PREPARATION
-    # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    # # -------------------- LEGEND --------------------
-    if (legend & !export)
-        stop("Legends are only available when a figure is exported. Set `export = TRUE` if you wish to produce a legend.")
+  # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  # # DATA PREPARATION
+  # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  # # -------------------- LEGEND --------------------
+  if (legend & !export) {
+    stop("Legends are only available when a figure is exported. Set `export = TRUE` if you wish to produce a legend.")
+  }
 
-    if (focus == "all") {
-        focus <- NULL
-    }
+  if (focus == "all") {
+    focus <- NULL
+  }
 
-    # -------------------- NODES -------------------- Check
-    # if data must be imported
-    if (is.character(nodes)) {
-        # WARNING: security issue here, modify code to
-        # check structure before loading data
-        nodes <- vroom::vroom(nodes)
-    }
+  # -------------------- NODES -------------------- Check
+  # if data must be imported
+  if (is.character(nodes)) {
+    # WARNING: security issue here, modify code to
+    # check structure before loading data
+    nodes <- vroom::vroom(nodes)
+  }
 
-    # Check if data has the proper columns
-    chk <- all(c("network", "subnetwork", "category") %in% colnames(nodes))
-    if (!chk)
-        stop("Columns `network`, `subnetwork` and `category` must be present in `nodes`.")
+  # Check if data has the proper columns
+  chk <- all(c("network", "subnetwork", "category") %in% colnames(nodes))
+  if (!chk) {
+    stop("Columns `network`, `subnetwork` and `category` must be present in `nodes`.")
+  }
 
-    # Check if colors are included in the data
-    cols <- as.factor(nodes$subnetwork) |>
-        as.numeric()
-    if (is.null(colNode)) {
-        if ("col" %in% colnames(nodes)) {
-            cli::cli_alert_info("`col` found in column names")
-        } else {
-            cli::cli_alert_warning("`col` not found in column names, defaulting to viridis")
-            nodes$col <- viridis::viridis(max(cols))[cols]
-        }
+  # Check if colors are included in the data
+  cols <- as.factor(nodes$subnetwork) |>
+    as.numeric()
+  if (is.null(colNode)) {
+    if ("col" %in% colnames(nodes)) {
+      cli::cli_alert_info("`col` found in column names")
     } else {
-        # Add colors
-        if (is.function(colNode)) {
-            nodes$col <- colNode(max(cols))[cols]
-        } else if (is.character(colNode)) {
-            nodes$col <- colNode
-        } else {
-            cli::cli_alert_warning("wrong color type, defaulting to viridis")
-            nodes$col <- viridis::viridis(max(cols))[cols]
-        }
+      cli::cli_alert_warning("`col` not found in column names, defaulting to viridis")
+      nodes$col <- viridis::viridis(max(cols))[cols]
     }
-
-    # Check if node sizes are included in the data
-    chk <- "size" %in% colnames(nodes)
-    if (!chk) {
-        # Add node size
-        nodes$size <- nodeSize
+  } else {
+    # Add colors
+    if (is.function(colNode)) {
+      nodes$col <- colNode(max(cols))[cols]
+    } else if (is.character(colNode)) {
+      nodes$col <- colNode
+    } else {
+      cli::cli_alert_warning("wrong color type, defaulting to viridis")
+      nodes$col <- viridis::viridis(max(cols))[cols]
     }
+  }
 
-    # -------------------- LINKS -------------------- Check
-    # if data must be imported
-    if (is.character(links)) {
-        # WARNING: security issue here, modify code to
-        # check structure before loading data
-        links <- vroom::vroom(links)
-    }
+  # Check if node sizes are included in the data
+  chk <- "size" %in% colnames(nodes)
+  if (!chk) {
+    # Add node size
+    nodes$size <- nodeSize
+  }
 
-    # Check if data has the proper columns
-    chk <- all(c("from", "to") %in% colnames(links))
-    if (!chk)
-        stop("Columns `from` and `to` must be present in `links`.")
+  # -------------------- LINKS -------------------- Check
+  # if data must be imported
+  if (is.character(links)) {
+    # WARNING: security issue here, modify code to
+    # check structure before loading data
+    links <- vroom::vroom(links)
+  }
 
-    # Check if colors are included in the data
-    chk <- "col" %in% colnames(links)
-    if (!chk) {
-        # Add colors
-        links$col <- colLink
-    }
+  # Check if data has the proper columns
+  chk <- all(c("from", "to") %in% colnames(links))
+  if (!chk) {
+    stop("Columns `from` and `to` must be present in `links`.")
+  }
 
-    # Check if link widths are included in the data
-    chk <- "width" %in% colnames(links)
-    if (!chk) {
-        # Add link width
-        links$width <- linkWidth
-    }
+  # Check if colors are included in the data
+  chk <- "col" %in% colnames(links)
+  if (!chk) {
+    # Add colors
+    links$col <- colLink
+  }
 
-    # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    # # GRAPH ELEMENTS
-    # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    # # Boundaries of networks
-    tmp <- nodes
-    tmp$subnetwork <- tmp$network
-    networks <- bound(tmp)
-    networks <- nodePos(tmp, networks, edgeRad = 0.85, groupRad = 0.6)$networkGroup
+  # Check if link widths are included in the data
+  chk <- "width" %in% colnames(links)
+  if (!chk) {
+    # Add link width
+    links$width <- linkWidth
+  }
 
-    # Boundaries of subnetworks
-    networkGroup <- bound(nodes)
+  # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  # # GRAPH ELEMENTS
+  # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  # # Boundaries of networks
+  tmp <- nodes
+  tmp$subnetwork <- tmp$network
+  networks <- bound(tmp)
+  networks <- nodePos(tmp, networks, edgeRad = 0.85, groupRad = 0.6)$networkGroup
 
-    # Colors of subnetworks
-    networkGroup <- dplyr::left_join(networkGroup, nodes[, c("subnetwork",
-        "col")], by = c(Var1 = "subnetwork")) |>
-        dplyr::distinct()
+  # Boundaries of subnetworks
+  networkGroup <- bound(nodes)
 
-    # Node and subnetwork coordinates
-    meta <- nodePos(nodes, networkGroup, edgeRad = 0.85, groupRad = 0.6)
-    nodes <- meta$nodes
-    networkGroup <- meta$networkGroup
+  # Colors of subnetworks
+  networkGroup <- dplyr::left_join(networkGroup, nodes[, c(
+    "subnetwork",
+    "col"
+  )], by = c(Var1 = "subnetwork")) |>
+    dplyr::distinct()
 
-    # Position of labels if `legend = TRUE`
-    if (legend) {
-        labs <- nodePos(nodes, networkGroup, edgeRad = 0.9, groupRad = 0.6)
-        labs <- labs$nodes |>
-            dplyr::filter(size > 0) |>
-            dplyr::group_by(network, subnetwork) |>
-            dplyr::mutate(lab = 1:dplyr::n()) |>
-            dplyr::ungroup()
-    }
+  # Node and subnetwork coordinates
+  meta <- nodePos(nodes, networkGroup, edgeRad = 0.85, groupRad = 0.6)
+  nodes <- meta$nodes
+  networkGroup <- meta$networkGroup
 
-    # Link colors
-    meta <- linkCol(links, networkGroup, focus = focus, colLink = colLink,
-        shadowLink = shadowLink)
-    links <- meta$links
-    networkGroup <- meta$networkGroup
+  # Position of labels if `legend = TRUE`
+  if (legend) {
+    labs <- nodePos(nodes, networkGroup, edgeRad = 0.9, groupRad = 0.6)
+    labs <- labs$nodes |>
+      dplyr::filter(size > 0) |>
+      dplyr::group_by(network, subnetwork) |>
+      dplyr::mutate(lab = 1:dplyr::n()) |>
+      dplyr::ungroup()
+  }
 
-    # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    # # PLOT
-    # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    # #
-    if (export) {
-        grDevices::png(filename, res = res, width = img_size,
-            height = img_size, units = "mm")
-    }
+  # Link colors
+  meta <- linkCol(links, networkGroup,
+    focus = focus, colLink = colLink,
+    shadowLink = shadowLink
+  )
+  links <- meta$links
+  networkGroup <- meta$networkGroup
 
-    graphics::par(mar = c(0, 0, 0, 0), family = "serif", bg = "#ffffff00")
-    plot0(x = c(-1.1, 1.1), asp = 1)
+  # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  # # PLOT
+  # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  # #
+  if (export) {
+    grDevices::png(filename,
+      res = res, width = img_size,
+      height = img_size, units = "mm"
+    )
+  }
 
-    # Networks
-    boxGroup(links, networks, rad1 = 1.03, rad2 = 1.13, colBox = "#00000000",
-        colNames = "#000000", border = "#000000", cexNetwork = textSize *
-            2, type = "line")
+  graphics::par(mar = c(0, 0, 0, 0), family = "serif", bg = "#ffffff00")
+  plot0(x = c(-1.1, 1.1), asp = 1)
 
-    # Subnetworks
-    boxGroup(links, networkGroup, rad1 = rad1, rad2 = rad2, colBox = networkGroup$colBox,
-        colNames = networkGroup$colNames, border = "transparent",
-        cexNetwork = textSize)
+  # Networks
+  boxGroup(links, networks,
+    rad1 = 1.03, rad2 = 1.13, colBox = "#00000000",
+    colNames = "#000000", border = "#000000", cexNetwork = textSize *
+      2, type = "line"
+  )
 
-    # Links
-    plotLinks(nodes, links, networkGroup, lwd = links$width)
+  # Subnetworks
+  boxGroup(links, networkGroup,
+    rad1 = rad1, rad2 = rad2, colBox = networkGroup$colBox,
+    colNames = networkGroup$colNames, border = "transparent",
+    cexNetwork = textSize
+  )
 
-    # Shadow under nodes
-    if (shadowNode) {
-        graphics::points(nodes$x, nodes$y, pch = 20, cex = (nodes$size *
-            5), col = "#d7d7d7")
-    }
+  # Links
+  plotLinks(nodes, links, networkGroup, lwd = links$width)
 
-    # Nodes
+  # Shadow under nodes
+  if (shadowNode) {
     graphics::points(nodes$x, nodes$y, pch = 20, cex = (nodes$size *
-        3), col = nodes$col)
+      5), col = "#d7d7d7")
+  }
 
-    # Add labels if legend
-    if (legend)
-        graphics::text(x = labs$x, y = labs$y, labels = labs$lab,
-            cex = textSize * 0.6)
+  # Nodes
+  graphics::points(nodes$x, nodes$y, pch = 20, cex = (nodes$size *
+    3), col = nodes$col)
 
-    if (export)
-        grDevices::dev.off()
+  # Add labels if legend
+  if (legend) {
+    graphics::text(
+      x = labs$x, y = labs$y, labels = labs$lab,
+      cex = textSize * 0.6
+    )
+  }
 
-    # Legend
-    if (legend) {
-        metanetwork_legend(labs = labs, res = res, textSize = textSize,
-            filename)
-    }
+  if (export) {
+    grDevices::dev.off()
+  }
 
-    invisible(filename)
+  # Legend
+  if (legend) {
+    metanetwork_legend(
+      labs = labs, res = res, textSize = textSize,
+      filename
+    )
+  }
+
+  invisible(filename)
 }

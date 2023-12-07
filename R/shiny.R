@@ -2,5 +2,5 @@
 #'
 #' @export
 run_metanetwork_app <- function() {
-    shiny::runApp(fs::path_package("metanetwork", "app"))
+  shiny::runApp(fs::path_package("metanetwork", "app"))
 }

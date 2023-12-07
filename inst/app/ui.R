@@ -19,24 +19,29 @@ ui <- fluidPage(
           icon = icon("gear"),
           hr(),
           h4("Fichiers sources"),
-          textInput(inputId = "googledrive_link",
-              label = "Lien vers le classeur Google Drive",
-              value = "https://docs.google.com/spreadsheets/d/15xejjdLDYrjSbuO4Ufb83x38vBASi7bqTDF0svO22Uc/edit?usp=sharing"),
-          helpText("Remarque : la feuille de calcul 
-          Google Drive doit être visible 
-          par toute personne disposant du lien ; 
-          pour avoir une feuille de calcul bien structurée, 
+          textInput(
+            inputId = "googledrive_link",
+            label = "Lien vers le classeur Google Drive",
+            value = "https://docs.google.com/spreadsheets/d/15xejjdLDYrjSbuO4Ufb83x38vBASi7bqTDF0svO22Uc/edit?usp=sharing"
+          ),
+          helpText("Remarque : la feuille de calcul
+          Google Drive doit être visible
+          par toute personne disposant du lien ;
+          pour avoir une feuille de calcul bien structurée,
           le plus simple est de copier le document exemple:
            'Fichier' -> 'Créer une copie'"),
           actionButton("reloadDataButton",
             icon = icon("refresh"),
-            "Recharger les données"),
+            "Recharger les données"
+          ),
           actionButton("hyperlink", "Se rendre sur la feuille Google",
-            icon = icon("th")),
+            icon = icon("th")
+          ),
           hr(),
           h4("Paramètres généraux"),
           numericInput("textSize", "Taille de la police",
-            value = 1, step = 0.05),
+            value = 1, step = 0.05
+          ),
           checkboxInput("shadowNode", "Ombragement des noeuds", value = TRUE),
           hr(),
           h4("Largeur des barres de sous-réseaux"),
@@ -59,9 +64,9 @@ ui <- fluidPage(
         tabPanel("Liens",
           icon = icon("gear"),
           hr(),
-          #colourpicker::colourInput("colLink", "Couleur des liens", "#876b40"),
+          # colourpicker::colourInput("colLink", "Couleur des liens", "#876b40"),
           numericInput("linkWidth", "Taille des liens", value = 1, step = 0.05),
-          selectInput("focus", 
+          selectInput("focus",
             "Groupe de liens mis en évidence",
             choices = c("All")
           )
