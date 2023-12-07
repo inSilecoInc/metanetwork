@@ -123,8 +123,7 @@ linkCol <- function(links, networkGroup, focus = NULL, colLink = "#876b40", shad
     }
   }
 
-  metanetwork <- list(links = links, networkGroup = networkGroup)
-  metanetwork
+  list(links = links, networkGroup = networkGroup)
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
@@ -219,7 +218,7 @@ plotLinks <- function(nodes, links, networkGroup, ...) {
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
 
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#
-metanetwork_legend <- function(labs, res = 300, textSize = 1) {
+metanetwork_legend <- function(labs, res = 300, textSize = 1, filename = NULL) {
   # Height of figure should depend on the maximum number of elements in a subnetwork
   # Width given to each subnetwork should depend on the number of subnetworks, but have a maximum width parameter
 
@@ -308,7 +307,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
   grDevices::dev.off()
   # ------------------------------------------------------------------------------------------
   # Figures of interest
-  i1 <- magick::image_read("metanetwork.png")
+  i1 <- magick::image_read(filename)
   i2 <- magick::image_read("metanetwork_legend.png")
 
   # Size of images
@@ -328,7 +327,7 @@ metanetwork_legend <- function(labs, res = 300, textSize = 1) {
 
   magick::image_write(
     img,
-    path = "metanetwork.png",
+    path = filename,
     format = "png"
   )
 
@@ -415,4 +414,21 @@ plotAreaColor <- function(color = "grey80", border = NA, ...) {
   }
   ##
   invisible(NULL)
+}
+
+## Choose palette colors
+choose_pal <- function(name) {
+  pal <- switch(
+    name,
+    "viridis" = viridis::viridis,
+    "magma" = viridis::magma,
+    "inferno" = viridis::inferno,
+    "plasma" = viridis::plasma,
+    "cividis" = viridis::cividis,
+    "rocket" = viridis::rocket,
+    "mako" = viridis::mako,
+    "turbo" = viridis::turbo,
+    NULL
+  )
+  return(pal)
 }

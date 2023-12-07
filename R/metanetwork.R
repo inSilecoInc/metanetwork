@@ -36,14 +36,14 @@
 metanetwork <- function(
     nodes,
     links,
-    colNode = viridis::viridis,
+    colNode = NULL,
     nodeSize = 0.5,
     colLink = "#876b40",
     linkWidth = 1,
     textSize = 1,
     rad1 = 0.925,
     rad2 = 1,
-    focus = NULL,
+    focus = "all",
     shadowNode = TRUE,
     shadowLink = "#f4f4f4",
     export = TRUE,
@@ -59,6 +59,10 @@ metanetwork <- function(
   # --------------------
   if (legend & !export) stop("Legends are only available when a figure is exported. Set `export = TRUE` if you wish to produce a legend.")
 
+  if (focus == "all") {
+    focus <- NULL
+  }
+
   # --------------------
   # NODES
   # --------------------
@@ -73,15 +77,29 @@ metanetwork <- function(
   if (!chk) stop("Columns `network`, `subnetwork` and `category` must be present in `nodes`.")
 
   # Check if colors are included in the data
-  chk <- "col" %in% colnames(nodes)
-  if (!chk) {
-    # Add colors
-    if (is.character(colNode)) {
-      nodes$col <- colNode
+  cols <- as.factor(nodes$subnetwork) |> 
+    as.numeric()
+  if (is.null(colNode)) {
+    if ("col" %in% colnames(nodes)) {
+      cli::cli_alert_info("`col` found in column names")
     } else {
-      cols <- as.factor(nodes$subnetwork) |> as.numeric()
-      nodes$col <- colNode(max(cols))[cols]
+      cli::cli_alert_warning(
+        "`col` not found in column names, defaulting to viridis"
+      )
+      nodes$col <- viridis::viridis(max(cols))[cols]
     }
+  } else {
+     # Add colors
+     if (is.function(colNode)) {
+       nodes$col <- colNode(max(cols))[cols]
+     } else if (is.character(colNode)) {
+       nodes$col <- colNode
+     } else {
+       cli::cli_alert_warning(
+         "wrong color type, defaulting to viridis"
+       )
+       nodes$col <- viridis::viridis(max(cols))[cols]
+     }
   }
 
   # Check if node sizes are included in the data
@@ -178,7 +196,7 @@ metanetwork <- function(
   }
 
   graphics::par(mar = c(0, 0, 0, 0), family = "serif", bg = "#ffffff00")
-  plot0(x = c(-1.1, 1.1))
+  plot0(x = c(-1.1, 1.1), asp = 1)
 
   # Networks
   boxGroup(
@@ -236,7 +254,8 @@ metanetwork <- function(
     metanetwork_legend(
       labs = labs,
       res = res,
-      textSize = textSize
+      textSize = textSize,
+      filename
     )
   }
 

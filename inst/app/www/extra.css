@@ -1,41 +1,24 @@
-#map-map {
-  height : 90vh !important;
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
+
+body {
+  font-family: "Poppins";
+  color: #4a4a4a;
 }
 
-#file_report {
-  color: #337ab7;
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Merriweather";
+  color: #4a4a4a;
+  font-weight: 600;
 }
 
-.pending{
-  color: #ccc;
-  font-size: 1.1em;
+h2 {
+  font-weight: 700;
 }
 
-.green {
-  color: #34c369;
-}
-
-.red {
-  color: #f03561;
-}
-
-.blue {
-  color: #399ad0;
-}
-
-.tbl_preview {
-  padding: 4px;
-  background-color: #eee;
-  border: 1px solid #aaa;
-  border-radius: 4px;
-}
-
-#report_html {
-  max-height: 900px!important;
-}
-
-#iframe_report {
-  height: 90vh;
+label {
+  color: #4a4a4a;
+  font-weight: normal;
 }
 
 #footer {
@@ -51,10 +34,4 @@
   width: 84%;
   display:inline-table;
   text-align: center;
-}
-
-.shiny-notification {
-  position:fixed;
-  top: calc(85%);
-  left: calc(10%);
 }
