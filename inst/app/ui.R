@@ -24,10 +24,12 @@ ui <- fluidPage(
             label = "Lien vers le classeur Google Drive",
             value = "https://docs.google.com/spreadsheets/d/15xejjdLDYrjSbuO4Ufb83x38vBASi7bqTDF0svO22Uc/edit?usp=sharing"
           ),
+
           actionButton("reloadDataButton",
             icon = icon("refresh"),
             "Recharger les données"
           ),
+
           uiOutput("gsLink"),
           helpText("Remarque : la feuille de calcul
           Google Drive doit être visible
@@ -35,6 +37,7 @@ ui <- fluidPage(
           pour avoir une feuille de calcul bien structurée,
           le plus simple est de copier le document exemple:
            'Fichier' -> 'Créer une copie'"),
+
           hr(),
           h4("Paramètres généraux"),
           numericInput("textSize", "Taille de la police",
