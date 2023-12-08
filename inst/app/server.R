@@ -53,9 +53,9 @@ server <- function(input, output, session) {
 
   output$gsLink <- renderUI({
     shiny::actionButton("hyperlink", "Se rendre sur la feuille Google",
-            icon = icon("th"),
-            onclick = paste0("window.open('", input$googledrive_link, "', '_blank')")
-          )
+      icon = icon("th"),
+      onclick = paste0("window.open('", input$googledrive_link, "', '_blank')")
+    )
   })
 
   output$metanetwork <- shiny::renderImage(
@@ -64,7 +64,7 @@ server <- function(input, output, session) {
       metanetwork(
         r$nodes,
         r$links,
-        colNode = choose_pal(input$colNode),
+        colNode = metanetwork:::choose_pal(input$colNode),
         nodeSize = input$nodeSize,
         colLink = "#876b40", # input$colLink,
         linkWidth = input$linkWidth,
