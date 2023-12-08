@@ -44,16 +44,19 @@ server <- function(input, output, session) {
     ignoreInit = TRUE
   )
 
-  shiny::observeEvent(input$hyperlink, {
-    browseURL(input$googledrive_link)
-  })
-
   # OUTPUTS
   output$downloadFig <- shiny::downloadHandler(
     filename = function() input$filename,
     contentType = "image/png",
     content = function(file) file.copy("www/img/export_fig.png", file)
   )
+
+  output$gsLink <- renderUI({
+    shiny::actionButton("hyperlink", "Se rendre sur la feuille Google",
+            icon = icon("th"),
+            onclick = paste0("window.open('", input$googledrive_link, "', '_blank')")
+          )
+  })
 
   output$metanetwork <- shiny::renderImage(
     {
