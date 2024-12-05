@@ -220,7 +220,7 @@ plotLinks <- function(nodes, links, networkGroup, ...) {
 
     graphics::lines(graphics::xspline(linkPath$x, linkPath$y,
       shape = 1, draw = FALSE
-    ), col = links$col[i], ...)
+    ), col = links$col[i], lwd = links$width[i])
   }
 }
 # =~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=#

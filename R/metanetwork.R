@@ -8,6 +8,7 @@
 #' @param linkWidth numeric, width of links, if not provided in `links`. Can be a single numeric value or a numeric vector of length = `nrow(links)`.
 #' @param textSize numeric, size of text displayed on figure. All text displayed is a proportion of this parameter.
 #' @param rad1,rad2 lower and upper boundary for placement of individual network titles.
+#' @param groupRad position of group center of mass for link groupings in center of figure. Default to 0.6.
 #' @param focus character, name of network(s) to focus on; if length(focus) == 1, all links towards a single network; if length(focus) > 1, links focused on identified networks.
 #' @param shadowNode logical, add a shadow around nodes.
 #' @param shadowLink color of links that are not focused on.
@@ -36,7 +37,7 @@
 metanetwork <- function(
     nodes, links, colNode = NULL, nodeSize = 0.5,
     colLink = "#876b40", linkWidth = 1, textSize = 1, rad1 = 0.925,
-    rad2 = 1, focus = "all", shadowNode = TRUE, shadowLink = "#f4f4f4",
+    rad2 = 1, groupRad = 0.6, focus = "all", shadowNode = TRUE, shadowLink = "#f4f4f4",
     export = TRUE, filename = "metanetwork.png", res = 300, img_size = 200,
     legend = TRUE) {
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -47,7 +48,7 @@ metanetwork <- function(
     stop("Legends are only available when a figure is exported. Set `export = TRUE` if you wish to produce a legend.")
   }
 
-  if (focus == "all") {
+  if ("all" %in% focus) {
     focus <- NULL
   }
 
@@ -129,7 +130,7 @@ metanetwork <- function(
   tmp <- nodes
   tmp$subnetwork <- tmp$network
   networks <- bound(tmp)
-  networks <- nodePos(tmp, networks, edgeRad = 0.85, groupRad = 0.6)$networkGroup
+  networks <- nodePos(tmp, networks, edgeRad = 0.85, groupRad = groupRad)$networkGroup
 
   # Boundaries of subnetworks
   networkGroup <- bound(nodes)
@@ -142,13 +143,13 @@ metanetwork <- function(
     dplyr::distinct()
 
   # Node and subnetwork coordinates
-  meta <- nodePos(nodes, networkGroup, edgeRad = 0.85, groupRad = 0.6)
+  meta <- nodePos(nodes, networkGroup, edgeRad = 0.85, groupRad = groupRad)
   nodes <- meta$nodes
   networkGroup <- meta$networkGroup
 
   # Position of labels if `legend = TRUE`
   if (legend) {
-    labs <- nodePos(nodes, networkGroup, edgeRad = 0.9, groupRad = 0.6)
+    labs <- nodePos(nodes, networkGroup, edgeRad = 0.9, groupRad = groupRad)
     labs <- labs$nodes |>
       dplyr::filter(size > 0) |>
       dplyr::group_by(network, subnetwork) |>
@@ -193,7 +194,7 @@ metanetwork <- function(
   )
 
   # Links
-  plotLinks(nodes, links, networkGroup, lwd = links$width)
+  plotLinks(nodes, links, networkGroup)
 
   # Shadow under nodes
   if (shadowNode) {
