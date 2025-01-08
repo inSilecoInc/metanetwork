@@ -888,6 +888,46 @@
         "Built": "R 4.4.0; ; 2024-04-24 19:41:19 UTC; unix"
       }
     },
+    "graphicsutils": {
+      "Source": "github",
+      "Repository": null,
+      "description": {
+        "Package": "graphicsutils",
+        "Type": "Package",
+        "Title": "Collection of graphics utilities",
+        "Version": "1.6.0.9000",
+        "Date": "2022-01-08",
+        "Authors@R": "c(\n  person(\"Kevin\", \"Cazelles\", role = c(\"aut\", \"cre\"), email = \"kcazelle@uoguelph.ca\", comment = c(ORCID = \"0000-0001-6619-9874\")),\n  person(\"Nicolas\", \"Casajus\", role = \"aut\", comment = c(ORCID = \"0000-0002-5537-5294\")),\n  person(\"David\", \"Beauchesne\", role = \"aut\", comment = c(ORCID = \"0000-0002-3590-8161\")),\n  person(given = \"Steve\", family = \"Vissault\", comment = c(ORCID = \"0000-0002-0866-4376\"), role = \"aut\")\n  )",
+        "Description": "A collection of functions to easily customize graphics-based plots.",
+        "Depends": "R (>= 3.2.0)",
+        "Imports": "grDevices, graphics, methods, stats, utils, jpeg (>= 0.1-8),\npng (>= 0.1-7), Rcpp (>= 0.12.9)",
+        "Suggests": "knitr, plotrix, rmarkdown, testthat, maps",
+        "LinkingTo": "Rcpp",
+        "NeedsCompilation": "yes",
+        "LazyData": "true",
+        "URL": "https://github.com/inSileco/graphicsutils,\nhttp://insileco.github.io/graphicsutils/",
+        "BugReports": "https://github.com/inSileco/graphicsutils/issues",
+        "License": "GPL-3",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.1",
+        "VignetteBuilder": "knitr",
+        "Roxygen": "list(markdown = TRUE)",
+        "RemoteType": "github",
+        "RemoteHost": "api.github.com",
+        "RemoteRepo": "graphicsutils",
+        "RemoteUsername": "inSileco",
+        "RemoteRef": "HEAD",
+        "RemoteSha": "5c07f2b54493ac78d75c610020aabf759c50c89f",
+        "GithubRepo": "graphicsutils",
+        "GithubUsername": "inSileco",
+        "GithubRef": "HEAD",
+        "GithubSHA1": "5c07f2b54493ac78d75c610020aabf759c50c89f",
+        "Packaged": "2024-09-10 17:36:48 UTC; kc",
+        "Author": "Kevin Cazelles [aut, cre] (<https://orcid.org/0000-0001-6619-9874>),\n  Nicolas Casajus [aut] (<https://orcid.org/0000-0002-5537-5294>),\n  David Beauchesne [aut] (<https://orcid.org/0000-0002-3590-8161>),\n  Steve Vissault [aut] (<https://orcid.org/0000-0002-0866-4376>)",
+        "Maintainer": "Kevin Cazelles <kcazelle@uoguelph.ca>",
+        "Built": "R 4.4.1; x86_64-pc-linux-gnu; 2024-09-10 17:36:49 UTC; unix"
+      }
+    },
     "gridExtra": {
       "Source": "CRAN",
       "Repository": "https://cran.wu.ac.at",
@@ -1115,6 +1155,28 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-12-20 10:00:13 UTC",
         "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2024-04-25 19:41:04 UTC; unix"
+      }
+    },
+    "jpeg": {
+      "Source": "CRAN",
+      "Repository": "https://cran.wu.ac.at",
+      "description": {
+        "Package": "jpeg",
+        "Version": "0.1-10",
+        "Title": "Read and write JPEG images",
+        "Author": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+        "Maintainer": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+        "Depends": "R (>= 2.9.0)",
+        "Description": "This package provides an easy and simple way to read, write and display bitmap images stored in the JPEG format. It can read and write both files and in-memory raw vectors.",
+        "License": "GPL-2 | GPL-3",
+        "SystemRequirements": "libjpeg",
+        "URL": "https://www.rforge.net/jpeg/",
+        "BugReports": "https://github.com/s-u/jpeg/issues",
+        "NeedsCompilation": "yes",
+        "Packaged": "2022-11-29 09:23:09 UTC; rforge",
+        "Repository": "CRAN",
+        "Date/Publication": "2022-11-29 11:12:52 UTC",
+        "Built": "R 4.4.1; x86_64-pc-linux-gnu; 2024-09-10 17:36:46 UTC; unix"
       }
     },
     "jquerylib": {
@@ -1609,6 +1671,28 @@
         "Packaged": "2023-11-09 16:39:28 UTC; murdoch",
         "Encoding": "UTF-8",
         "Built": "R 4.4.0; ; 2024-04-25 01:52:09 UTC; unix"
+      }
+    },
+    "png": {
+      "Source": "CRAN",
+      "Repository": "https://cran.wu.ac.at",
+      "description": {
+        "Package": "png",
+        "Version": "0.1-8",
+        "Title": "Read and write PNG images",
+        "Author": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+        "Maintainer": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+        "Depends": "R (>= 2.9.0)",
+        "Description": "This package provides an easy and simple way to read, write and display bitmap images stored in the PNG format. It can read and write both files and in-memory raw vectors.",
+        "License": "GPL-2 | GPL-3",
+        "SystemRequirements": "libpng",
+        "URL": "http://www.rforge.net/png/",
+        "NeedsCompilation": "yes",
+        "Packaged": "2022-11-29 09:42:31 UTC; rforge",
+        "Repository": "RSPM",
+        "Date/Publication": "2022-11-29 11:12:53 UTC",
+        "Encoding": "UTF-8",
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2024-04-25 19:46:14 UTC; unix"
       }
     },
     "prettyunits": {
@@ -2294,7 +2378,7 @@
   },
   "files": {
     "DESCRIPTION": {
-      "checksum": "0178b4a529c05b8b42fa3904c94b5e6a"
+      "checksum": "3cf3d2fd2e8203f48de2491fd510e873"
     },
     "global.R": {
       "checksum": "1ed9314fad99e22fb02becb35a9ea348"

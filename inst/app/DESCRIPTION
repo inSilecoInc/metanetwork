@@ -1,6 +1,6 @@
 Title: Circular Hierarchical Edge Bundling Graphs
 Author: inSileco
-AuthorUrl: http://www.rstudio.com/
+AuthorUrl: insileco.io
 License: MIT + file LICENSE
 Tags: Metanetwork
 Type: Shiny
@@ -12,6 +12,7 @@ Imports:
     fs,
     glue,
     graphics,
+    graphicsutils,
     grDevices,
     magick,
     metanetwork,
@@ -27,4 +28,5 @@ Suggests:
     shinycssloaders,
     shinyjs
 Remotes: 
-  inSilecoInc/metanetwork
+  inSilecoInc/metanetwork,
+  inSileco/graphicsutils
