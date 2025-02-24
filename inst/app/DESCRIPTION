@@ -12,7 +12,6 @@ Imports:
     fs,
     glue,
     graphics,
-    graphicsutils,
     grDevices,
     magick,
     metanetwork,
@@ -28,5 +27,4 @@ Suggests:
     shinycssloaders,
     shinyjs
 Remotes: 
-  inSilecoInc/metanetwork,
-  inSileco/graphicsutils
+  inSilecoInc/metanetwork
