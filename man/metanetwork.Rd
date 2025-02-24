@@ -14,6 +14,7 @@ metanetwork(
   textSize = 1,
   rad1 = 0.925,
   rad2 = 1,
+  groupRad = 0.6,
   focus = "all",
   shadowNode = TRUE,
   shadowLink = "#f4f4f4",
@@ -40,6 +41,8 @@ metanetwork(
 \item{textSize}{numeric, size of text displayed on figure. All text displayed is a proportion of this parameter.}
 
 \item{rad1, rad2}{lower and upper boundary for placement of individual network titles.}
+
+\item{groupRad}{position of group center of mass for link groupings in center of figure. Default to 0.6.}
 
 \item{focus}{character, name of network(s) to focus on; if length(focus) == 1, all links towards a single network; if length(focus) > 1, links focused on identified networks.}
 

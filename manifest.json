@@ -2427,6 +2427,32 @@
         "Built": "R 4.4.0; ; 2024-12-14 04:17:15 UTC; unix"
       }
     },
+    "shinycssloaders": {
+      "Source": "CRAN",
+      "Repository": "https://cran.wu.ac.at",
+      "description": {
+        "Package": "shinycssloaders",
+        "Title": "Add Loading Animations to a 'shiny' Output While It's\nRecalculating",
+        "Version": "1.1.0",
+        "Authors@R": "c(\n    person(\"Dean\",\"Attali\",email=\"daattali@gmail.com\",role=c(\"aut\",\"cre\"),\n        comment = c(\"Maintainer/developer of shinycssloaders since 2019\", ORCID=\"0000-0002-5645-3493\")),\n    person(\"Andras\",\"Sali\",email=\"andras.sali@alphacruncher.hu\",role=c(\"aut\"),comment=\"Original creator of shinycssloaders package\"),\n    person(\"Luke\",\"Hass\",role=c(\"ctb\",\"cph\"),comment=\"Author of included CSS loader code\")\n    )",
+        "Description": "When a 'Shiny' output (such as a plot, table, map, etc.) is recalculating, it remains \n    visible but gets greyed out. Using 'shinycssloaders', you can add a loading animation (\"spinner\")\n    to outputs instead. By wrapping a 'Shiny' output in 'withSpinner()', a spinner will automatically\n    appear while the output is recalculating. You can also manually show and hide the spinner, or add\n    a full-page spinner to cover the entire page.\n    See the demo online at <https://daattali.com/shiny/shinycssloaders-demo/>.",
+        "License": "MIT + file LICENSE",
+        "URL": "https://github.com/daattali/shinycssloaders,\nhttps://daattali.com/shiny/shinycssloaders-demo/",
+        "BugReports": "https://github.com/daattali/shinycssloaders/issues",
+        "Depends": "R (>= 3.1)",
+        "Imports": "digest, glue, grDevices, htmltools (>= 0.3.5), shiny",
+        "Suggests": "knitr, shinydisconnect, shinyjs",
+        "RoxygenNote": "7.2.3",
+        "Encoding": "UTF-8",
+        "NeedsCompilation": "no",
+        "Packaged": "2024-07-30 18:52:48 UTC; Dean",
+        "Author": "Dean Attali [aut, cre] (Maintainer/developer of shinycssloaders since\n    2019, <https://orcid.org/0000-0002-5645-3493>),\n  Andras Sali [aut] (Original creator of shinycssloaders package),\n  Luke Hass [ctb, cph] (Author of included CSS loader code)",
+        "Maintainer": "Dean Attali <daattali@gmail.com>",
+        "Repository": "RSPM",
+        "Date/Publication": "2024-07-30 22:30:02 UTC",
+        "Built": "R 4.4.0; ; 2024-07-31 04:16:51 UTC; unix"
+      }
+    },
     "sourcetools": {
       "Source": "CRAN",
       "Repository": "https://cran.wu.ac.at",
@@ -2966,7 +2992,7 @@
       "checksum": "dc395e2fba2c697c9e5af571eef1b5d4"
     },
     ".Rbuildignore": {
-      "checksum": "90d1ab7ed8d384730b7319c3ab8aad34"
+      "checksum": "f4d092f3ce4095ffe5c44a6f7275ea3f"
     },
     "app.R": {
       "checksum": "2e357c71da722f7f445e7341c2cd3da9"
@@ -2978,7 +3004,7 @@
       "checksum": "ae375c2a877d987f4e12fef51c1957c4"
     },
     "inst/app/DESCRIPTION": {
-      "checksum": "fe41db87a5dd0c2dd2b3d76bc858534f"
+      "checksum": "d10d97a367464301d4cd3c40dae4f7dd"
     },
     "inst/app/global.R": {
       "checksum": "1ed9314fad99e22fb02becb35a9ea348"
@@ -2993,7 +3019,7 @@
       "checksum": "c356be474529ed5201dc198ad65bb4db"
     },
     "inst/app/www/img/export_fig.png": {
-      "checksum": "00d5b07100d7c8f3d8ae3df81fed5606"
+      "checksum": "d38f0f293639f2fbe6a7b6aee9a384d0"
     },
     "inst/app/www/img/insileco_logo256.png": {
       "checksum": "523d63e3a49321bde609b579fcb7a42d"
@@ -3020,7 +3046,7 @@
       "checksum": "a979e80bfc5d5114ebe7f1ee56eb05e7"
     },
     "man/metanetwork.Rd": {
-      "checksum": "9e16ab7073232b51902c4e755a46da57"
+      "checksum": "ad2433fe8e2753423a7c7cd06abddb2c"
     },
     "man/run_metanetwork_app.Rd": {
       "checksum": "0822a4c1e475fbbf7b916568abb493f2"
