@@ -1,0 +1,9 @@
+default:
+  golem_name: metanetwork
+  app_prod: true
+production:
+  app_prod: true
+  use_disclaimer: true
+dev:
+  golem_wd: !expr golem::pkg_path()
+  app_prod: false

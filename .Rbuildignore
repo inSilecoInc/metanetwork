@@ -3,3 +3,4 @@
 ^\.github$
 ^app\.R$
 ^manifest\.json$
+^dev$

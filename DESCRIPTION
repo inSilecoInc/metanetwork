@@ -1,6 +1,6 @@
 Package: metanetwork
 Title: Circular Hierarchical Edge Bundling Graphs
-Version: 0.0.0.9006
+Version: 0.0.0.9007
 Authors@R: c(
     person(given   = "David",
            family  = "Beauchesne",
@@ -24,22 +24,24 @@ Depends:
        R (>= 4.1.0)
 Imports:
        cli,
+       config,
        dplyr,
        fs,
        glue,
+       golem (>= 0.5.1),
+       googlesheets4,
        graphics,
        grDevices,
        magick,
        methods,
        plotrix,
        shiny (>= 1.7.0),
+       shinycssloaders,
        utils,
        viridis,
        vroom
 Suggests: 
        colourpicker,
        testthat (>= 3.0.0),
-       pkgload,
-       shinycssloaders,
-       shinyjs
+       pkgload
 Config/testthat/edition: 3
