@@ -79,7 +79,7 @@ app_server <- function(input, output, session) {
                 focus = input$focus,
                 shadowNode = input$shadowNode,
                 export = TRUE,
-                filename = app_sys("app/www/img/export_fig.png"),
+                filename = file.path(app_sys(), "app/www/img/export_fig.png"),
                 res = input$res,
                 img_size = input$img_size,
                 legend = input$legend

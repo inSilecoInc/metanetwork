@@ -170,9 +170,8 @@ metanetwork <- function(
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   # #
   if (export) {
-    grDevices::png(filename,
-      res = res, width = img_size,
-      height = img_size, units = "mm"
+    grDevices::png(
+      filename, res = res, width = img_size, height = img_size, units = "mm"
     )
   }
 
